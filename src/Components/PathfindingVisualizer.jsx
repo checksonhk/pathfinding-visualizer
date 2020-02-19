@@ -135,7 +135,17 @@ export default function PathfindingVisualizer(props) {
   }
 
   function resetGrid() {
-    for(let i =0; i < )
-  }
+    for (let row = 0; row < state.grid.length; row++) {
+      for (let col = 0; col < state.grid[row].length; col++) {
+        if (state.grid[row][col].isStart) {
+          document.getElementById(`node-${row}-${col}`).className = 'node node-start';
+        }
+        if (state.grid[row][col].isFinish) {
+          document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
+        }
 
+        document.getElementById(`node-${row}-${col}`).className = 'node';
+      }
+    }
+  }
 }
