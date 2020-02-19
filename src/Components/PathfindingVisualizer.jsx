@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder } from '../Algorithms/dijsktra';
@@ -37,7 +37,6 @@ const getNewGridWithWallToggled = function(grid, row, col) {
   // create copy of grid
   const newGrid = grid.slice();
   const node = newGrid[row][col];
-  // update isWall !node.isWall will just switch boolean
   const newNode = {
     ...node,
     isWall: !node.isWall,
@@ -47,40 +46,64 @@ const getNewGridWithWallToggled = function(grid, row, col) {
   return newGrid;
 };
 
-export default class PathfindingVisualizer extends Component {
-  constructor() {
-    super();
-    this.state = {
-      grid: [],
-      mouseIsPressed: false,
-    };
-  }
+export default function PathfindingVisualizer(props) {
+  const [state, setState] = useState({ grid: [], mouseIsPressed: false });
 
-  componentDidMount() {
+  useEffect(() => {
     const grid = getInitialGrid();
-    this.setState({ grid });
+    setState(state => ({ ...state, grid: grid }));
+  });
+
+  return (
+    <Fragment>
+      <button onClick={() => visualizeDijkstra()}>Visualize Dijikstra's Algorithm</button>
+      <div className='grid'>
+        {state.grid.map((row, rowIdx) => {
+          return (
+            <div key={rowIdx}>
+              {row.map((node, nodeIdx) => {
+                const { row, col, isFinish, isStart, isWall } = node;
+                return (
+                  <Node
+                    key={nodeIdx}
+                    col={col}
+                    isFinish={isFinish}
+                    isStart={isStart}
+                    isWall={isWall}
+                    mouseIsPressed={state.mouseIsPressed}
+                    onMouseDown={(row, col) => handleMouseDown(row, col)}
+                    onMouseEnter={(row, col) => handleMouseEnter(row, col)}
+                    onMouseUp={() => handleMouseUp()}
+                    row={row}></Node>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </Fragment>
+  );
+
+  function handleMouseDown(row, col) {
+    const newGrid = getNewGridWithWallToggled(state.grid, row, col);
+    setState({ grid: newGrid, mouseIsPressed: true });
   }
 
-  handleMouseDown(row, col) {
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({ grid: newGrid, mouseIsPressed: true });
+  function handleMouseEnter(row, col) {
+    if (!state.mouseIsPressed) return;
+    const newGrid = getNewGridWithWallToggled(state.grid, row, col);
+    setState(state => ({ ...state, grid: newGrid }));
   }
 
-  handleMouseEnter(row, col) {
-    if (!this.state.mouseIsPressed) return;
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({ grid: newGrid });
+  function handleMouseUp() {
+    setState(state => ({ ...state, mouseIsPressed: false }));
   }
 
-  handleMouseUp() {
-    this.setState({ mouseIsPressed: false });
-  }
-
-  animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+  function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPathOrder);
+          animateShortestPath(nodesInShortestPathOrder);
         }, 10 * i);
         return;
       }
@@ -91,7 +114,7 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
-  animateShortestPath(nodesInShortestPathOrder) {
+  function animateShortestPath(nodesInShortestPathOrder) {
     for (let i = 0; i <= nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -100,46 +123,12 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
-  visualizeDijkstra = function() {
-    const { grid } = this.state;
+  function visualizeDijkstra() {
+    const { grid } = state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-  };
-
-  render() {
-    const { grid, mouseIsPressed } = this.state;
-
-    return (
-      <Fragment>
-        <button onClick={() => this.visualizeDijkstra()}>Visualize Dijikstra's Algorithm</button>
-        <div className='grid'>
-          {grid.map((row, rowIdx) => {
-            return (
-              <div key={rowIdx}>
-                {row.map((node, nodeIdx) => {
-                  const { row, col, isFinish, isStart, isWall } = node;
-                  return (
-                    <Node
-                      key={nodeIdx}
-                      col={col}
-                      isFinish={isFinish}
-                      isStart={isStart}
-                      isWall={isWall}
-                      mouseIsPressed={mouseIsPressed}
-                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                      onMouseUp={() => this.handleMouseUp()}
-                      row={row}></Node>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </Fragment>
-    );
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 }
