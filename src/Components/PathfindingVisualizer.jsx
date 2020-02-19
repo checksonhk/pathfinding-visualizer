@@ -1,7 +1,8 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder } from '../Algorithms/dijsktra';
+import NavBar from './NavBar';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -47,16 +48,17 @@ const getNewGridWithWallToggled = function(grid, row, col) {
 };
 
 export default function PathfindingVisualizer(props) {
+  console.log('RENDERING GRID');
   const [state, setState] = useState({ grid: [], mouseIsPressed: false });
 
   useEffect(() => {
     const grid = getInitialGrid();
     setState(state => ({ ...state, grid: grid }));
-  });
+  }, []);
 
   return (
-    <Fragment>
-      <button onClick={() => visualizeDijkstra()}>Visualize Dijikstra's Algorithm</button>
+    <div id='pathfinding-visualizer'>
+      <NavBar visualizeClick={visualizeDijkstra} resetClick={resetGrid} />
       <div className='grid'>
         {state.grid.map((row, rowIdx) => {
           return (
@@ -81,7 +83,7 @@ export default function PathfindingVisualizer(props) {
           );
         })}
       </div>
-    </Fragment>
+    </div>
   );
 
   function handleMouseDown(row, col) {
@@ -131,4 +133,9 @@ export default function PathfindingVisualizer(props) {
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
+
+  function resetGrid() {
+    for(let i =0; i < )
+  }
+
 }
