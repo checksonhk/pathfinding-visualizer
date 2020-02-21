@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
-import { dijkstra, getNodesInShortestPathOrder } from '../Algorithms/dijsktra';
+import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijsktra';
+import { dfs } from '../algorithms/dfs';
 import NavBar from './NavBar';
 
 const START_NODE_ROW = 10;
@@ -62,7 +63,7 @@ export default function PathfindingVisualizer(props) {
       <div className='grid'>
         {state.grid.map((row, rowIdx) => {
           return (
-            <div key={rowIdx}>
+            <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
                 const { row, col, isFinish, isStart, isWall } = node;
                 return (
@@ -129,7 +130,9 @@ export default function PathfindingVisualizer(props) {
     const { grid } = state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
-    const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
+    // const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
+    const visitedNodesInOrder = dfs(grid, startNode, endNode);
+    console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
