@@ -3,6 +3,7 @@ import Node from './Node';
 import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijsktra';
 import { dfs } from '../algorithms/dfs';
+import { bfs } from '../algorithms/bfs';
 import NavBar from './NavBar';
 
 const START_NODE_ROW = 10;
@@ -52,17 +53,19 @@ const getNewGridWithWallToggled = function(grid, row, col) {
 export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
   const [state, setState] = useState({ grid: [], mouseIsPressed: false });
+  const [grid, setGrid] = useState([]);
+  const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
   useEffect(() => {
     const grid = getInitialGrid();
-    setState(state => ({ ...state, grid: grid }));
+    setGrid(grid);
   }, []);
 
   return (
     <div id='pathfinding-visualizer'>
       <NavBar visualizeClick={visualizeDijkstra} resetClick={resetGrid} />
       <div className='grid'>
-        {state.grid.map((row, rowIdx) => {
+        {grid.map((row, rowIdx) => {
           return (
             <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
@@ -74,7 +77,7 @@ export default function PathfindingVisualizer(props) {
                     isFinish={isFinish}
                     isStart={isStart}
                     isWall={isWall}
-                    mouseIsPressed={state.mouseIsPressed}
+                    mouseIsPressed={mouseIsPressed}
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
                     onMouseUp={() => handleMouseUp()}
@@ -89,18 +92,19 @@ export default function PathfindingVisualizer(props) {
   );
 
   function handleMouseDown(row, col) {
-    const newGrid = getNewGridWithWallToggled(state.grid, row, col);
-    setState({ grid: newGrid, mouseIsPressed: true });
+    const newGrid = getNewGridWithWallToggled(grid, row, col);
+    setGrid(newGrid);
+    setMouseIsPressed(true);
   }
 
   function handleMouseEnter(row, col) {
-    if (!state.mouseIsPressed) return;
-    const newGrid = getNewGridWithWallToggled(state.grid, row, col);
-    setState(state => ({ ...state, grid: newGrid }));
+    if (!mouseIsPressed) return;
+    const newGrid = getNewGridWithWallToggled(grid, row, col);
+    setGrid(newGrid);
   }
 
   function handleMouseUp() {
-    setState(state => ({ ...state, mouseIsPressed: false }));
+    setMouseIsPressed(false);
   }
 
   function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -128,20 +132,20 @@ export default function PathfindingVisualizer(props) {
   }
 
   function visualizeDijkstra() {
-    const { grid } = state;
+    // const { grid } = state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     // const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    const visitedNodesInOrder = dfs(grid, startNode, endNode);
+    const visitedNodesInOrder = bfs(grid, startNode, endNode);
     console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   function resetGrid() {
-    for (let row = 0; row < state.grid.length; row++) {
-      for (let col = 0; col < state.grid[row].length; col++) {
-        if (state.grid[row][col].isStart) {
+    for (let row = 0; row < grid.length; row++) {
+      for (let col = 0; col < grid[row].length; col++) {
+        if (grid[row][col].isStart) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-start';
         }
         if (state.grid[row][col].isFinish) {
