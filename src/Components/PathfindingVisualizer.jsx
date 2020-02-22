@@ -12,6 +12,7 @@ const END_NODE_COL = 35;
 
 const createNode = function(col, row) {
   return {
+    id: `${row}-${col}`,
     col,
     row,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
