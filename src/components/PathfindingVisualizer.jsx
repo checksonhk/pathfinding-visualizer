@@ -4,6 +4,8 @@ import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijsktra';
 import { dfs } from '../algorithms/dfs';
 import { bfs } from '../algorithms/bfs';
+import { bi_bfs } from '../algorithms/bi-directional-bfs';
+import { bestfs } from '../algorithms/best-first-search';
 import NavBar from './NavBar';
 
 const START_NODE_ROW = 10;
@@ -19,9 +21,12 @@ const createNode = function(col, row) {
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === END_NODE_ROW && col === END_NODE_COL,
     distance: Infinity,
+    totalDistance: Infinity,
+    heuristicDistance: null,
     isVisited: false,
     isWall: false,
     previousNode: null,
+    weight: 0,
   };
 };
 
@@ -38,7 +43,7 @@ const getInitialGrid = function() {
 };
 
 const getNewGridWithWallToggled = function(grid, row, col) {
-  // create copy of grid
+  // should I even slice here ? trade-off for immutability for # of re renders
   const newGrid = grid.slice();
   const node = newGrid[row][col];
   const newNode = {
@@ -52,7 +57,7 @@ const getNewGridWithWallToggled = function(grid, row, col) {
 
 export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
-  const [state, setState] = useState({ grid: [], mouseIsPressed: false });
+  // const [state, setState] = useState({ grid: [], mouseIsPressed: false });
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
 
@@ -61,6 +66,7 @@ export default function PathfindingVisualizer(props) {
     setGrid(grid);
   }, []);
 
+  // console.log('REF', node.current);
   return (
     <div id='pathfinding-visualizer'>
       <NavBar visualizeClick={visualizeDijkstra} resetClick={resetGrid} />
@@ -69,7 +75,7 @@ export default function PathfindingVisualizer(props) {
           return (
             <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart, isWall } = node;
+                const { row, col, isFinish, isStart, isWall, distance } = node;
                 return (
                   <Node
                     key={nodeIdx}
@@ -81,7 +87,9 @@ export default function PathfindingVisualizer(props) {
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
                     onMouseUp={() => handleMouseUp()}
-                    row={row}></Node>
+                    row={row}>
+                    distance={distance}
+                  </Node>
                 );
               })}
             </div>
@@ -136,8 +144,8 @@ export default function PathfindingVisualizer(props) {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     // const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    const visitedNodesInOrder = bfs(grid, startNode, endNode);
-    console.log(visitedNodesInOrder);
+    const visitedNodesInOrder = bestfs(grid, startNode, endNode);
+    // console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
@@ -148,7 +156,7 @@ export default function PathfindingVisualizer(props) {
         if (grid[row][col].isStart) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-start';
         }
-        if (state.grid[row][col].isFinish) {
+        if (grid[row][col].isFinish) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
         }
 

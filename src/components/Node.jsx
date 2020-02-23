@@ -3,7 +3,7 @@ import './Node.css';
 
 export default function Node(props) {
   console.log('RENDERING NODE');
-  const { row, col, isFinish, isStart, isWall, onMouseDown, onMouseEnter, onMouseUp } = props;
+  const { row, col, isFinish, isStart, isWall, onMouseDown, onMouseEnter, onMouseUp, distance } = props;
   const extraClassName = isFinish ? 'node-finish' : isStart ? 'node-start' : isWall ? 'node-wall' : '';
 
   return (
