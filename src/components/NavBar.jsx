@@ -38,7 +38,7 @@ export default function NavBar(props) {
             <Navbar.Text>Add Bomb</Navbar.Text>
           </Nav.Item>
           <Nav.Item>
-            <Button onClick={props.visualizeClick}>Visualize</Button>
+            <Button onClick={props.visualizeClick}>Visualize {state.currentAlgorithm}</Button>
           </Nav.Item>
           <Nav.Item>
             <Button onClick={props.resetClick}>Clear Board</Button>

@@ -179,13 +179,16 @@ export default function PathfindingVisualizer(props) {
       for (let col = 0; col < grid[row].length; col++) {
         if (grid[row][col].isStart) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-start';
+          continue;
         }
         if (grid[row][col].isFinish) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
+          continue;
         }
-
         document.getElementById(`node-${row}-${col}`).className = 'node';
       }
     }
+    const newGrid = getInitialGrid();
+    setGrid(newGrid);
   }
 }
