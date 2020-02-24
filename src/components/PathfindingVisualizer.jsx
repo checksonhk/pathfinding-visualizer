@@ -5,6 +5,7 @@ import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '
 import NavBar from './NavBar';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { simpleDemonstration } from '../maze-algorithms/basicRandom';
+import { recursiveDivision } from '../maze-algorithms/recursiveDivision';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -176,7 +177,7 @@ export default function PathfindingVisualizer(props) {
   }
 
   function visualizeMaze() {
-    const wallNodesInOrder = simpleDemonstration(grid);
+    const wallNodesInOrder = recursiveDivision(grid);
     animateMaze(wallNodesInOrder);
   }
 
