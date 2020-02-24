@@ -4,6 +4,7 @@ import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import NavBar from './NavBar';
 import { pathfindingContext } from '../context/pathfindingContext';
+import { simpleDemonstration } from '../maze-algorithms/basicRandom';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -72,17 +73,9 @@ export default function PathfindingVisualizer(props) {
     setGrid(grid);
   }, []);
 
-  function visualizeDijkstra() {
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const endNode = grid[END_NODE_ROW][END_NODE_COL];
-    const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-  }
-
   return (
     <div id='pathfinding-visualizer'>
-      <NavBar visualizeClick={visualizeDijkstra} resetClick={resetGrid} />
+      <NavBar visualizeClick={visualizeDijkstra} generateClick={visualizeMaze} resetClick={resetGrid} />
       <div className='grid'>
         {grid.map((row, rowIdx) => {
           return (
@@ -171,6 +164,30 @@ export default function PathfindingVisualizer(props) {
       default:
         console.log('UNIMPLEMENTED ALGORITHM \n DEFAULT SET TO DJISKTRA');
         return dijkstra(grid, startNode, endNode);
+    }
+  }
+
+  function visualizeDijkstra() {
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const endNode = grid[END_NODE_ROW][END_NODE_COL];
+    const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  function visualizeMaze() {
+    const wallNodesInOrder = simpleDemonstration(grid);
+    animateMaze(wallNodesInOrder);
+  }
+
+  function animateMaze(visitedNodesInOrder) {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      setTimeout(() => {
+        const node = visitedNodesInOrder[i];
+        // hacky solution to minimize rerenders
+        // TODO: look into useRef to achieve similar result
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
+      }, 10 * i);
     }
   }
 

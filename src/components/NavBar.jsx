@@ -43,6 +43,9 @@ export default function NavBar(props) {
           <Nav.Item>
             <Button onClick={props.resetClick}>Clear Board</Button>
           </Nav.Item>
+          <Nav.Item>
+            <Button onClick={props.generateClick}>Generate</Button>
+          </Nav.Item>
         </Nav>
       </Navbar.Collapse>
       {/* <li>Clear Walls & Weights</li>
