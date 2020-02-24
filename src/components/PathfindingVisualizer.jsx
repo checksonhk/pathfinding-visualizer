@@ -6,12 +6,13 @@ import { dfs } from '../algorithms/dfs';
 import { bfs } from '../algorithms/bfs';
 import { bi_bfs } from '../algorithms/bi-directional-bfs';
 import { bestfs } from '../algorithms/best-first-search';
+import { astar } from '../algorithms/astar';
 import NavBar from './NavBar';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 35;
+const END_NODE_COL = 25;
 
 const createNode = function(col, row) {
   return {
@@ -83,7 +84,7 @@ export default function PathfindingVisualizer(props) {
           return (
             <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart, isWall, distance } = node;
+                const { row, col, isFinish, isStart, isWall, distance, totalDistance, heuristicDistance } = node;
                 return (
                   <Node
                     key={nodeIdx}
@@ -96,7 +97,10 @@ export default function PathfindingVisualizer(props) {
                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
                     onMouseUp={() => handleMouseUp()}
                     row={row}
-                    distance={distance}></Node>
+                    distance={distance}
+                    // hdistance={heuristicDistance}
+                    // tdistance={totalDistance}
+                  ></Node>
                 );
               })}
             </div>
@@ -153,7 +157,7 @@ export default function PathfindingVisualizer(props) {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const endNode = grid[END_NODE_ROW][END_NODE_COL];
     // const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    const visitedNodesInOrder = bestfs(grid, startNode, endNode);
+    const visitedNodesInOrder = astar(grid, startNode, endNode);
     // console.log(visitedNodesInOrder);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);

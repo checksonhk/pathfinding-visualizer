@@ -2,11 +2,13 @@ export function astar(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];
 
   startNode.distance = 0;
+  startNode.totalDistance = 0;
   const unvisitedNodes = getAllNodes(grid);
 
   // use !! to force boolean conversion
   while (!!unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
+    // console.log(unvisitedNodes);
     const closestNode = unvisitedNodes.shift(); // Get the first Node
 
     // If we encounter a wall, we skip it.
@@ -26,7 +28,8 @@ export function astar(grid, startNode, finishNode) {
 }
 
 const sortNodesByDistance = function(unvisitedNodes) {
-  unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+  // sort by total distance first, if they are the same, sortby heuristicdistance
+  unvisitedNodes.sort((nodeA, nodeB) => nodeA.totalDistance - nodeB.totalDistance || nodeA.heuristicDistance - nodeB.heuristicDistance);
 };
 
 const updateUnvisitedNeighbors = function(node, grid, startNode, finishNode) {
@@ -38,10 +41,13 @@ const updateUnvisitedNeighbors = function(node, grid, startNode, finishNode) {
 
 const updateNode = function(node, neighbor, startNode, finishNode) {
   const distance = distanceFromNeighbor(node, neighbor);
-  const distanceToCompare = neighbor.weight + distance + manhattanDistance(neighbor, finishNode);
+  // set heuristic distance if there isnt one
+  if (!neighbor.heuristicDistance) neighbor.heuristicDistance = manhattanDistance(neighbor, finishNode);
+  const distanceToCompare = neighbor.weight + distance + node.distance;
 
   if (distanceToCompare < neighbor.distance) {
     neighbor.distance = distanceToCompare;
+    neighbor.totalDistance = neighbor.distance + neighbor.heuristicDistance;
     neighbor.previousNode = node;
   }
 };
