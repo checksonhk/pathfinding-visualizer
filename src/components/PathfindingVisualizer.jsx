@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
-import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijsktra';
-import { dfs } from '../algorithms/dfs';
-import { bfs } from '../algorithms/bfs';
-import { bi_bfs } from '../algorithms/bi-directional-bfs';
-import { bestfs } from '../algorithms/best-first-search';
-import { astar } from '../algorithms/astar';
+import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import NavBar from './NavBar';
+import { pathfindingContext } from '../context/pathfindingContext';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 25;
+const END_NODE_COL = 35;
 
 const createNode = function(col, row) {
   return {
@@ -44,7 +40,7 @@ const getInitialGrid = function() {
 };
 
 const getNewGridWithWallToggled = function(grid, row, col) {
-  /* preformance issues */
+  /* preformance issues - too many rerenders*/
   // const newGrid = grid.slice();
   // const node = newGrid[row][col];
   // const newNode = {
@@ -67,14 +63,22 @@ const getNewGridWithWallToggled = function(grid, row, col) {
 
 export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
-  // const [state, setState] = useState({ grid: [], mouseIsPressed: false });
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const { state, dispatch } = useContext(pathfindingContext);
 
   useEffect(() => {
     const grid = getInitialGrid();
     setGrid(grid);
   }, []);
+
+  function visualizeDijkstra() {
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const endNode = grid[END_NODE_ROW][END_NODE_COL];
+    const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
 
   return (
     <div id='pathfinding-visualizer'>
@@ -152,15 +156,22 @@ export default function PathfindingVisualizer(props) {
     }
   }
 
-  function visualizeDijkstra() {
-    // const { grid } = state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const endNode = grid[END_NODE_ROW][END_NODE_COL];
-    // const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-    const visitedNodesInOrder = astar(grid, startNode, endNode);
-    // console.log(visitedNodesInOrder);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  function setAlgorithm(algorithm, grid, startNode, endNode) {
+    switch (algorithm) {
+      case 'DJISKTRA':
+        return dijkstra(grid, startNode, endNode);
+      case 'BREADTH_FIRST_SEARCH':
+        return bfs(grid, startNode, endNode);
+      case 'DEPTH_FIRST_SEARCH':
+        return dfs(grid, startNode, endNode);
+      case 'BEST_FIRST_SEARCH':
+        return bestfs(grid, startNode, endNode);
+      case 'A_STAR':
+        return astar(grid, startNode, endNode);
+      default:
+        console.log('UNIMPLEMENTED ALGORITHM \n DEFAULT SET TO DJISKTRA');
+        return dijkstra(grid, startNode, endNode);
+    }
   }
 
   function resetGrid() {

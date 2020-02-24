@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
+import { pathfindingContext } from '../context/pathfindingContext';
 
 export default function NavBar(props) {
   console.log('RENDERING NAVBAR');
+  const { state, dispatch } = useContext(pathfindingContext);
+  const pathfindingAlgorithms = {
+    'Depth First Search': 'DEPTH_FIRST_SEARCH',
+    'Breadth First Search': 'BREADTH_FIRST_SEARCH',
+    'Greedy Best Search': 'BEST_FIRST_SEARCH',
+    Djisktra: 'DJISKTRA',
+    'A*': 'A_STAR',
+  };
+
+  function handleClick(value) {
+    dispatch({ type: 'SET_ALGORITHM', payload: value });
+  }
   return (
     <Navbar>
       <Navbar.Brand>PathFinding Visualizer</Navbar.Brand>
@@ -10,9 +23,11 @@ export default function NavBar(props) {
       <Navbar.Collapse id='basic-navbar-nav'>
         <Nav className='mr-auto'>
           <NavDropdown title='Algorithms' id='basic-nav-dropdown'>
-            <NavDropdown.Item href='#action/3.1'>Action</NavDropdown.Item>
-            <NavDropdown.Item href='#action/3.2'>Another action</NavDropdown.Item>
-            <NavDropdown.Item href='#action/3.3'>Something</NavDropdown.Item>
+            {Object.keys(pathfindingAlgorithms).map(algorithm => (
+              <NavDropdown.Item key={algorithm} onClick={e => handleClick(pathfindingAlgorithms[algorithm])}>
+                {algorithm}
+              </NavDropdown.Item>
+            ))}
           </NavDropdown>
           <NavDropdown title='Maze & Patterns' id='basic-nav-dropdown'>
             <NavDropdown.Item href='#action/3.1'>Action</NavDropdown.Item>
