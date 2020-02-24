@@ -4,14 +4,14 @@ export function bestfs(grid, startNode, finishNode) {
   startNode.distance = 0;
   const unvisitedNodes = getAllNodes(grid);
 
-  console.log(unvisitedNodes);
   // use !! to force boolean conversion
   while (!!unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift(); // Get the first Node
 
+    console.log('CLOSEST NODE', closestNode);
     // If we encounter a wall, we skip it.
-    if (closestNode.isWall) continue;
+    // if (closestNode.isWall) continue;
 
     // If the closest node is a distance of ifinity,
     // we must be trapped and should therefore stop.
@@ -38,7 +38,7 @@ const updateUnvisitedNeighbors = function(node, grid, startNode, finishNode) {
 };
 
 const updateNode = function(node, neighbor, startNode, finishNode) {
-  const distance = node.distance;
+  const distance = distanceFromNeighbor(node, neighbor);
   const distanceToCompare = neighbor.weight + distance + manhattanDistance(neighbor, finishNode);
 
   if (distanceToCompare < neighbor.distance) {
@@ -46,6 +46,25 @@ const updateNode = function(node, neighbor, startNode, finishNode) {
     neighbor.previousNode = node;
   }
 };
+
+function distanceFromNeighbor(node, neighbor) {
+  if (node.row === neighbor.row - 1 && node.col === neighbor.col) {
+    // console.log('LEFT');
+    return 1;
+  }
+  if (node.row === neighbor.row + 1 && node.col === neighbor.col) {
+    // console.log('RIGHT');
+    return 1;
+  }
+  if (node.col === neighbor.col + 1 && node.row === neighbor.row) {
+    // console.log('UP');
+    return 1;
+  }
+  if (node.col === neighbor.col - 1 && node.row === neighbor.row) {
+    // console.log('DOWN');
+    return 1;
+  }
+}
 
 function manhattanDistance(node, targetNode) {
   let yChange = Math.abs(node.row - targetNode.row);

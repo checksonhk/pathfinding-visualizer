@@ -11,7 +11,7 @@ import NavBar from './NavBar';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 35;
+const END_NODE_COL = 25;
 
 const createNode = function(col, row) {
   return {
@@ -87,9 +87,8 @@ export default function PathfindingVisualizer(props) {
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
                     onMouseUp={() => handleMouseUp()}
-                    row={row}>
-                    distance={distance}
-                  </Node>
+                    row={row}
+                    distance={distance}></Node>
                 );
               })}
             </div>

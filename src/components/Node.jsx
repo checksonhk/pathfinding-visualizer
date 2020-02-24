@@ -12,6 +12,8 @@ export default function Node(props) {
       className={`node ${extraClassName}`}
       onMouseDown={() => onMouseDown(row, col)}
       onMouseEnter={() => onMouseEnter(row, col)}
-      onMouseUp={() => onMouseUp()}></div>
+      onMouseUp={() => onMouseUp()}>
+      <span>{distance !== Infinity ? props.distance : ''}</span>
+    </div>
   );
 }
