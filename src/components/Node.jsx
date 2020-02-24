@@ -1,7 +1,7 @@
 import React from 'react';
 import './Node.css';
 
-export default function Node(props) {
+function Node(props) {
   console.log('RENDERING NODE');
   const { row, col, isFinish, isStart, isWall, onMouseDown, onMouseEnter, onMouseUp, distance } = props;
   const extraClassName = isFinish ? 'node-finish' : isStart ? 'node-start' : isWall ? 'node-wall' : '';
@@ -13,7 +13,9 @@ export default function Node(props) {
       onMouseDown={() => onMouseDown(row, col)}
       onMouseEnter={() => onMouseEnter(row, col)}
       onMouseUp={() => onMouseUp()}>
-      <span>{distance !== Infinity ? props.distance : ''}</span>
+      {/* <span>{distance !== Infinity ? props.distance : ''}</span> */}
     </div>
   );
 }
+
+export default React.memo(Node);

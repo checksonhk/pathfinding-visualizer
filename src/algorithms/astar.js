@@ -1,4 +1,4 @@
-export function bestfs(grid, startNode, finishNode) {
+export function astar(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];
 
   startNode.distance = 0;

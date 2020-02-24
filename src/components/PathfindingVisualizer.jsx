@@ -11,7 +11,7 @@ import NavBar from './NavBar';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 25;
+const END_NODE_COL = 35;
 
 const createNode = function(col, row) {
   return {
@@ -43,16 +43,25 @@ const getInitialGrid = function() {
 };
 
 const getNewGridWithWallToggled = function(grid, row, col) {
-  // should I even slice here ? trade-off for immutability for # of re renders
-  const newGrid = grid.slice();
-  const node = newGrid[row][col];
+  /* preformance issues */
+  // const newGrid = grid.slice();
+  // const node = newGrid[row][col];
+  // const newNode = {
+  //   ...node,
+  //   isWall: !node.isWall,
+  // };
+  // // update the newNode
+  // newGrid[row][col] = newNode;
+  // return newGrid;
+
+  /* Hacky Solution for now */
+  const node = grid[row][col];
   const newNode = {
     ...node,
     isWall: !node.isWall,
   };
-  // update the newNode
-  newGrid[row][col] = newNode;
-  return newGrid;
+  grid[row][col] = newNode;
+  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
 };
 
 export default function PathfindingVisualizer(props) {
@@ -66,7 +75,6 @@ export default function PathfindingVisualizer(props) {
     setGrid(grid);
   }, []);
 
-  // console.log('REF', node.current);
   return (
     <div id='pathfinding-visualizer'>
       <NavBar visualizeClick={visualizeDijkstra} resetClick={resetGrid} />
@@ -100,14 +108,14 @@ export default function PathfindingVisualizer(props) {
 
   function handleMouseDown(row, col) {
     const newGrid = getNewGridWithWallToggled(grid, row, col);
-    setGrid(newGrid);
+    // setGrid(newGrid);
     setMouseIsPressed(true);
   }
 
   function handleMouseEnter(row, col) {
     if (!mouseIsPressed) return;
     const newGrid = getNewGridWithWallToggled(grid, row, col);
-    setGrid(newGrid);
+    // setGrid(newGrid);
   }
 
   function handleMouseUp() {
@@ -124,6 +132,8 @@ export default function PathfindingVisualizer(props) {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
+        // hacky solution to minimize rerenders
+        // TODO: look into useRef to achieve similar result
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
       }, 10 * i);
     }
