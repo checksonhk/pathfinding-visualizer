@@ -11,7 +11,7 @@ const pathfindingReducer = (state, action) => {
 };
 
 const initialState = {
-  currentAlgorithm: 'DJISKTRA',
+  currentAlgorithm: 'BI_DIRECTIONAL_BFS',
 };
 
 export default function PathfindingContextProvider(props) {

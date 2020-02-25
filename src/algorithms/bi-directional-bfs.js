@@ -1,12 +1,14 @@
 export function bi_bfs(grid, startNode, finishNode) {
   const unvisitedNodesStart = [startNode];
-  const visitedNodesInOrderStart = [];
   const unvisitedNodesFinish = [finishNode];
-  const visitedNodesInOrderFinish = [];
+  const visitedNodesInOrder = [];
   let exploredNodes = { [startNode.id]: true, [finishNode.id]: true };
   startNode.distance = 0;
+  finishNode.distance = 0;
 
   while (unvisitedNodesStart.length && unvisitedNodesFinish.length) {
+    console.log('START', unvisitedNodesStart);
+    console.log('FINISH', unvisitedNodesFinish);
     let startingCurrentNode = unvisitedNodesStart.shift();
     // If we encounter a wall, we skip it.
     if (startingCurrentNode.isWall) continue;
@@ -14,15 +16,15 @@ export function bi_bfs(grid, startNode, finishNode) {
     // If the current node is a distance of ifinity,
     // we must be trapped and should therefore stop.
 
-    if (startingCurrentNode.distance === Infinity) return visitedNodesInOrderStart;
+    if (startingCurrentNode.distance === Infinity) return visitedNodesInOrder;
 
     // if current node is already visited then it must be from finish Node
-    if (startingCurrentNode.isVisited) {
-      return visitedNodesInOrderStart.concat(visitedNodesInOrderFinish);
-    }
+    // if (startingCurrentNode.isVisited) {
+    //   return visitedNodesInOrder;
+    // }
 
     startingCurrentNode.isVisited = true;
-    visitedNodesInOrderStart.push(startingCurrentNode);
+    visitedNodesInOrder.push(startingCurrentNode);
     const currentNeighborsStart = getUnvisitedNeighbors(startingCurrentNode, grid);
     currentNeighborsStart.forEach(neighbor => {
       if (!exploredNodes[neighbor.id]) {
@@ -42,22 +44,22 @@ export function bi_bfs(grid, startNode, finishNode) {
     // If the current node is a distance of ifinity,
     // we must be trapped and should therefore stop.
 
-    if (finishCurrentNode.distance === Infinity) return visitedNodesInOrderFinish;
+    if (finishCurrentNode.distance === Infinity) return visitedNodesInOrder;
 
     // if current node is already visited then it must be from finish Node
-    if (finishCurrentNode.isVisited) {
-      return visitedNodesInOrderFinish.concat(visitedNodesInOrderStart);
-    }
+    // if (finishCurrentNode.isVisited) {
+    //   return visitedNodesInOrder;
+    // }
 
     finishCurrentNode.isVisited = true;
-    visitedNodesInOrderFinish.push(finishCurrentNode);
+    visitedNodesInOrder.push(finishCurrentNode);
     const currentNeighborsFinish = getUnvisitedNeighbors(finishCurrentNode, grid);
     currentNeighborsFinish.forEach(neighbor => {
       if (!exploredNodes[neighbor.id]) {
         exploredNodes[neighbor.id] = true;
         neighbor.distance = finishCurrentNode.distance + 1;
         neighbor.previousNode = finishCurrentNode;
-        unvisitedNodesStart.push(neighbor);
+        unvisitedNodesFinish.push(neighbor);
       }
     });
   }

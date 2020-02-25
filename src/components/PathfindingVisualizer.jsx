@@ -6,6 +6,7 @@ import NavBar from './NavBar';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { simpleDemonstration } from '../maze-algorithms/basicRandom';
 import { recursiveDivision } from '../maze-algorithms/recursiveDivision';
+import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
@@ -162,6 +163,8 @@ export default function PathfindingVisualizer(props) {
         return bestfs(grid, startNode, endNode);
       case 'A_STAR':
         return astar(grid, startNode, endNode);
+      case 'BI_DIRECTIONAL_BFS':
+        return bi_bfs(grid, startNode, endNode);
       default:
         console.log('UNIMPLEMENTED ALGORITHM \n DEFAULT SET TO DJISKTRA');
         return dijkstra(grid, startNode, endNode);
