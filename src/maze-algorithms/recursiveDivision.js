@@ -126,7 +126,7 @@ function addInnerWalls(grid, rowStart, rowEnd, colStart, colEnd, orientation, ar
   }
 }
 
-export function recursiveDivision(grid) {
+export default function recursiveDivision(grid) {
   const wallsToAnimate = [];
   addOuterWalls(grid, wallsToAnimate);
   const row = grid.length;

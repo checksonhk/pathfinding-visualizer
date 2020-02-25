@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Node from './Node';
 import './PathfindingVisualizer.css';
 import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import NavBar from './NavBar';
 import { pathfindingContext } from '../context/pathfindingContext';
-import { simpleDemonstration } from '../maze-algorithms/basicRandom';
-import { recursiveDivision } from '../maze-algorithms/recursiveDivision';
+import { basicRandom, recursiveDivision } from '../maze-algorithms/index';
 import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
 const START_NODE_ROW = 10;
@@ -29,6 +28,19 @@ const createNode = function(col, row) {
     weight: 0,
   };
 };
+
+function resetNode(node) {
+  return {
+    ...node,
+    distance: Infinity,
+    totalDistance: Infinity,
+    heuristicDistance: null,
+    isVisited: false,
+    isWall: false,
+    previousNode: null,
+    weight: 0,
+  };
+}
 
 const getInitialGrid = function() {
   const grid = [];
@@ -77,7 +89,7 @@ export default function PathfindingVisualizer(props) {
 
   return (
     <div id='pathfinding-visualizer'>
-      <NavBar visualizeClick={visualizeDijkstra} generateClick={visualizeMaze} resetClick={resetGrid} />
+      <NavBar visualizeClick={visualizeDijkstra} mazeClick={visualizeMaze} resetClick={resetGrid} />
       <div className='grid'>
         {grid.map((row, rowIdx) => {
           return (
@@ -179,8 +191,19 @@ export default function PathfindingVisualizer(props) {
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
-  function visualizeMaze() {
-    const wallNodesInOrder = recursiveDivision(grid);
+  function visualizeMaze(maze) {
+    let wallNodesInOrder;
+    switch (maze) {
+      case 'RECURSIVE_DIVISION':
+        wallNodesInOrder = recursiveDivision(grid);
+        break;
+      case 'BASIC_RANDOM':
+        wallNodesInOrder = basicRandom(grid);
+        break;
+      default:
+        wallNodesInOrder = recursiveDivision(grid);
+        break;
+    }
     animateMaze(wallNodesInOrder);
   }
 
@@ -196,20 +219,29 @@ export default function PathfindingVisualizer(props) {
   }
 
   function resetGrid() {
-    for (let row = 0; row < grid.length; row++) {
-      for (let col = 0; col < grid[row].length; col++) {
+    const newGrid = grid.slice();
+    for (let row = 0; row < newGrid.length; row++) {
+      for (let col = 0; col < newGrid[row].length; col++) {
         if (grid[row][col].isStart) {
+          const node = grid[row][col];
+          const newNode = resetNode(node);
+          grid[row][col] = newNode;
           document.getElementById(`node-${row}-${col}`).className = 'node node-start';
           continue;
         }
         if (grid[row][col].isFinish) {
+          const node = grid[row][col];
+          const newNode = resetNode(node);
+          grid[row][col] = newNode;
           document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
           continue;
         }
+        const node = grid[row][col];
+        const newNode = resetNode(node);
+        grid[row][col] = newNode;
         document.getElementById(`node-${row}-${col}`).className = 'node';
       }
     }
-    const newGrid = getInitialGrid();
     setGrid(newGrid);
   }
 }

@@ -1,32 +1,3 @@
-export function astar(grid, startNode, finishNode) {
-  const visitedNodesInOrder = [];
-
-  startNode.distance = 0;
-  startNode.totalDistance = 0;
-  const unvisitedNodes = getAllNodes(grid);
-
-  // use !! to force boolean conversion
-  while (!!unvisitedNodes.length) {
-    sortNodesByDistance(unvisitedNodes);
-    // console.log(unvisitedNodes);
-    const closestNode = unvisitedNodes.shift(); // Get the first Node
-
-    // If we encounter a wall, we skip it.
-    if (closestNode.isWall) continue;
-
-    // If the closest node is a distance of ifinity,
-    // we must be trapped and should therefore stop.
-    if (closestNode.distance === Infinity) return visitedNodesInOrder;
-
-    visitedNodesInOrder.push(closestNode);
-
-    closestNode.isVisited = true;
-
-    if (closestNode === finishNode) return visitedNodesInOrder;
-    updateUnvisitedNeighbors(closestNode, grid, startNode, finishNode);
-  }
-}
-
 const sortNodesByDistance = function(unvisitedNodes) {
   // sort by total distance first, if they are the same, sortby heuristicdistance
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.totalDistance - nodeB.totalDistance || nodeA.heuristicDistance - nodeB.heuristicDistance);
@@ -108,4 +79,33 @@ export function getNodesInShortestPathOrder(finishNode) {
   }
 
   return getNodesInShortestPathOrder;
+}
+
+export function astar(grid, startNode, finishNode) {
+  const visitedNodesInOrder = [];
+
+  startNode.distance = 0;
+  startNode.totalDistance = 0;
+  const unvisitedNodes = getAllNodes(grid);
+
+  // use !! to force boolean conversion
+  while (!!unvisitedNodes.length) {
+    sortNodesByDistance(unvisitedNodes);
+    // console.log(unvisitedNodes);
+    const closestNode = unvisitedNodes.shift(); // Get the first Node
+
+    // If we encounter a wall, we skip it.
+    if (closestNode.isWall) continue;
+
+    // If the closest node is a distance of ifinity,
+    // we must be trapped and should therefore stop.
+    if (closestNode.distance === Infinity) return visitedNodesInOrder;
+
+    visitedNodesInOrder.push(closestNode);
+
+    closestNode.isVisited = true;
+
+    if (closestNode === finishNode) return visitedNodesInOrder;
+    updateUnvisitedNeighbors(closestNode, grid, startNode, finishNode);
+  }
 }

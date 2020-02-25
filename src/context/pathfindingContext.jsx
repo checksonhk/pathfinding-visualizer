@@ -5,13 +5,16 @@ const pathfindingReducer = (state, action) => {
   switch (action.type) {
     case 'SET_ALGORITHM':
       return { ...state, currentAlgorithm: action.payload };
+    case 'SET_MAZE':
+      return { ...state, currentMaze: action.payload };
     default:
       return state;
   }
 };
 
 const initialState = {
-  currentAlgorithm: 'BI_DIRECTIONAL_BFS',
+  currentAlgorithm: 'DEPTH_FIRST_SEARCH',
+  currentMaze: 'RECURSIVE_DIVISION',
 };
 
 export default function PathfindingContextProvider(props) {

@@ -5,6 +5,7 @@ import { pathfindingContext } from '../context/pathfindingContext';
 export default function NavBar(props) {
   console.log('RENDERING NAVBAR');
   const { state, dispatch } = useContext(pathfindingContext);
+
   const pathfindingAlgorithms = {
     'Depth First Search': 'DEPTH_FIRST_SEARCH',
     'Breadth First Search': 'BREADTH_FIRST_SEARCH',
@@ -13,8 +14,18 @@ export default function NavBar(props) {
     'A*': 'A_STAR',
   };
 
-  function handleClick(value) {
+  const mazeAlgorithms = {
+    'Recursive Division': 'RECURSIVE_DIVISION',
+    'Basic Random': 'BASIC_RANDOM',
+  };
+
+  function handleAlgorithm(value) {
     dispatch({ type: 'SET_ALGORITHM', payload: value });
+  }
+
+  function handleMaze(value) {
+    props.mazeClick(value);
+    // dispatch({ type: 'SET_MAZE', payload: value });
   }
   return (
     <Navbar>
@@ -24,15 +35,17 @@ export default function NavBar(props) {
         <Nav className='mr-auto'>
           <NavDropdown title='Algorithms' id='basic-nav-dropdown'>
             {Object.keys(pathfindingAlgorithms).map(algorithm => (
-              <NavDropdown.Item key={algorithm} onClick={e => handleClick(pathfindingAlgorithms[algorithm])}>
+              <NavDropdown.Item key={algorithm} onClick={e => handleAlgorithm(pathfindingAlgorithms[algorithm])}>
                 {algorithm}
               </NavDropdown.Item>
             ))}
           </NavDropdown>
           <NavDropdown title='Maze & Patterns' id='basic-nav-dropdown'>
-            <NavDropdown.Item href='#action/3.1'>Action</NavDropdown.Item>
-            <NavDropdown.Item href='#action/3.2'>Another action</NavDropdown.Item>
-            <NavDropdown.Item href='#action/3.3'>Something</NavDropdown.Item>
+            {Object.keys(mazeAlgorithms).map(maze => (
+              <NavDropdown.Item key={maze} onClick={() => handleMaze(mazeAlgorithms[maze])}>
+                {maze}
+              </NavDropdown.Item>
+            ))}
           </NavDropdown>
           <Nav.Item>
             <Navbar.Text>Add Bomb</Navbar.Text>
@@ -42,9 +55,6 @@ export default function NavBar(props) {
           </Nav.Item>
           <Nav.Item>
             <Button onClick={props.resetClick}>Clear Board</Button>
-          </Nav.Item>
-          <Nav.Item>
-            <Button onClick={props.generateClick}>Generate</Button>
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>
