@@ -1,8 +1,34 @@
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+function randomNumber(array) {
+  return Math.floor(Math.random() * array.length);
 }
 
-// split into utility function
+function randomColNRow(rowStart, rowEnd, colStart, colEnd, orientation) {
+  const possibleCols = [];
+  const possibleRows = [];
+  if (orientation === 'horizontal') {
+    // walls on even cells only
+    for (let number = rowStart; number <= rowEnd; number += 2) {
+      possibleRows.push(number);
+    }
+    // openings in odd cells only
+    for (let number = colStart - 1; number <= colEnd + 1; number += 2) {
+      possibleCols.push(number);
+    }
+  } else {
+    for (let number = colStart; number <= colEnd; number += 2) {
+      possibleCols.push(number);
+    }
+    for (let number = rowStart - 1; number <= rowEnd + 1; number += 2) {
+      possibleRows.push(number);
+    }
+  }
+  const randomColIndex = randomNumber(possibleCols);
+  const randomRowIndex = randomNumber(possibleRows);
+  const colRandom = possibleCols[randomColIndex];
+  const rowRandom = possibleRows[randomRowIndex];
+  return [colRandom, rowRandom];
+}
+
 const getAllNodes = function(grid) {
   const nodes = [];
   for (const row of grid) {
@@ -33,155 +59,60 @@ function addOuterWalls(grid, array) {
   return array;
 }
 
-// function addInnerWalls(horizontal, minX, maxX, minY, maxY, grid, startNode, array) {
-//   if (horizontal) {
-//     // base case
-//     if (maxX - minX < 2) {
-//       return;
-//     }
-//     const y = Math.floor(randomNumber(minY, maxY) / 2) * 2;
-//     addHWall(minX, maxX, y, grid, array);
-//     addInnerWalls(!horizontal, minX, maxX, minY, y - 1, grid, startNode, array);
-//     addInnerWalls(!horizontal, minX, maxX, y + 1, maxY, grid, startNode, array);
-//   } else {
-//     if (maxY - minY < 2) {
-//       return;
-//     }
-//     const x = Math.floor(randomNumber(minX, maxX) / 2) * 2;
-//     addVWall(minY, maxY, x, grid, array);
-//     addInnerWalls(!horizontal, minX, x - 1, minY, maxY, startNode, array);
-//     addInnerWalls(!horizontal, x + 1, maxX, minY, maxY, startNode, array);
-//   }
-// }
-// function addHWall(minX, maxX, y, grid, array) {
-//   const hole = Math.floor(randomNumber(minX, maxX) / 2) * 2 + 1;
+function addVerticalWall(grid, colStart, colEnd, colRandom, currentRow, array) {
+  getAllNodes(grid).forEach(node => {
+    if (node.row === currentRow && node.col !== colRandom && node.col >= colStart - 1 && node.col <= colEnd + 1) {
+      if (!node.isStart && !node.isFinish) {
+        node.isWall = true;
+        array.push(node);
+      }
+    }
+  });
+}
 
-//   for (let i = minX; i <= maxX; i++) {
-//     if (i == hole) grid[y][i].isWall = false;
-//     else {
-//       const node = grid[y][i];
-//       console.log(node);
-//       node.isWall = true;
-//       array.push(node);
-//     }
-//   }
-// }
-
-// function addVWall(minY, maxY, x, grid, array) {
-//   const hole = Math.floor(randomNumber(minY, maxY) / 2) * 2 + 1;
-//   console.log('VWALLHOLE', hole);
-
-//   for (let i = minY; i <= maxY; i++) {
-//     if (i == hole) grid[i][x].isWall = false;
-//     else {
-//       const node = grid[i][x];
-//       console.log(node);
-//       node.isWall = true;
-//       array.push(node);
-//     }
-//   }
-// }
-
-// export function recursiveDivision(grid, startNode) {
-//   const wallsToAnimate = [];
-//   addOuterWalls(grid, wallsToAnimate);
-//   addInnerWalls(true, 1, grid[0].length - 2, 1, grid.length - 2, grid, startNode, wallsToAnimate);
-//   return wallsToAnimate;
-// }
-
-export function recursiveDivision(grid) {
-  const wallsToAnimate = [];
-  addOuterWalls(grid, wallsToAnimate);
-  // console.log('ROW', grid.length);
-  // console.log('COL', grid[0].length);
-  addInnerWalls(grid, 2, grid.length - 2, 2, grid[0].length - 3, 'horizontal', wallsToAnimate);
-  return wallsToAnimate;
+function addHorizontalWall(grid, rowStart, rowEnd, rowRandom, currentCol, array) {
+  getAllNodes(grid).forEach(node => {
+    if (node.col === currentCol && node.row !== rowRandom && node.row >= rowStart - 1 && node.row <= rowEnd + 1) {
+      if (!node.isStart && !node.isFinish) {
+        node.isWall = true;
+        array.push(node);
+      }
+    }
+  });
 }
 
 function addInnerWalls(grid, rowStart, rowEnd, colStart, colEnd, orientation, array) {
   if (orientation === 'horizontal') {
-    if (rowEnd < rowStart || colEnd < colStart) {
-      console.log('ROW', rowEnd, rowStart);
+    if (rowEnd < rowStart) {
       return;
     }
-    let possibleRows = [];
-    for (let number = rowStart; number <= rowEnd; number += 2) {
-      possibleRows.push(number);
-    }
-    let possibleCols = [];
-    for (let number = colStart - 1; number <= colEnd + 1; number += 2) {
-      possibleCols.push(number);
-    }
-    let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
-    let randomColIndex = Math.floor(Math.random() * possibleCols.length);
-    let currentRow = possibleRows[randomRowIndex];
-    let colRandom = possibleCols[randomColIndex];
 
-    getAllNodes(grid).forEach(node => {
-      if (node.row === currentRow && node.col !== colRandom && node.col >= colStart - 1 && node.col <= colEnd + 1) {
-        if (!node.isStart && !node.isFinish) {
-          node.isWall = true;
-          array.push(node);
-        }
-      }
-    });
+    const [colRandom, currentRow] = randomColNRow(rowStart, rowEnd, colStart, colEnd, orientation);
 
-    // addInnerWalls(grid, rowStart, rowEnd, colStart, colEnd - 1, 'vertical', array);
-    // addInnerWalls(grid, rowStart, rowEnd, colStart + 1, colEnd, 'vertical', array);
+    addVerticalWall(grid, colStart, colEnd, colRandom, currentRow, array);
 
+    // check if remaining row from point or column is larger if # of rows from point is larger add another horizontal wall, else vertical wall
     if (currentRow - 2 - rowStart > colEnd - colStart) {
       addInnerWalls(grid, rowStart, currentRow - 2, colStart, colEnd, 'horizontal', array);
     } else {
       addInnerWalls(grid, rowStart, currentRow - 2, colStart, colEnd, 'vertical', array);
     }
-
+    // check if remaining rows or column is larger if # of rows is larger add another horizontal wall, else vertical wall
     if (rowEnd - (currentRow + 2) > colEnd - colStart) {
       addInnerWalls(grid, currentRow + 2, rowEnd, colStart, colEnd, 'horizontal', array);
     } else {
       addInnerWalls(grid, currentRow + 2, rowEnd, colStart, colEnd, 'vertical', array);
     }
   } else if (orientation === 'vertical') {
-    if (rowEnd < rowStart || colEnd < colStart) {
-      console.log('Col', colEnd, colStart);
+    if (colEnd < colStart) {
       return;
     }
 
-    let possibleCols = [];
-    for (let number = colStart; number <= colEnd; number += 2) {
-      possibleCols.push(number);
-    }
-    let possibleRows = [];
-    for (let number = rowStart - 1; number <= rowEnd + 1; number += 2) {
-      possibleRows.push(number);
-    }
-    let randomColIndex = Math.floor(Math.random() * possibleCols.length);
-    let randomRowIndex = Math.floor(Math.random() * possibleRows.length);
-    let currentCol = possibleCols[randomColIndex];
-    let rowRandom = possibleRows[randomRowIndex];
+    let [currentCol, rowRandom] = randomColNRow(rowStart, rowEnd, colStart, colEnd, orientation);
 
-    getAllNodes(grid).forEach(node => {
-      if (node.col === currentCol && node.row !== rowRandom && node.row >= rowStart - 1 && node.row <= rowEnd + 1) {
-        if (!node.isStart && !node.isFinish) {
-          node.isWall = true;
-          array.push(node);
-        }
-      }
-    });
+    addHorizontalWall(grid, rowStart, rowEnd, rowRandom, currentCol, array);
 
-    // addInnerWalls(grid, rowStart, rowEnd - 1, colStart, colEnd, 'horizontal', array);
-    // addInnerWalls(grid, rowStart + 1, rowEnd, colStart, colEnd, 'horizontal', array);
-
-    //   for (let row = rowStart; row <= rowEnd; row++) {
-    //     for (let col = colStart; col <= colEnd; col++) {
-    //       if ((col === currentCol) & (row !== currentRow)) {
-    //         const node = grid[row][col];
-    //         if (!node.isStart && !node.isFinish) {
-    //           node.isWall = true;
-    //           array.push(node);
-    //         }
-    //       }
-    //     }
-    //   }
+    // check if remaining if either row or column is larger
     if (rowEnd - rowStart > currentCol - 2 - colStart) {
       addInnerWalls(grid, rowStart, rowEnd, colStart, currentCol - 2, 'horizontal', array);
     } else {
@@ -193,4 +124,13 @@ function addInnerWalls(grid, rowStart, rowEnd, colStart, colEnd, orientation, ar
       addInnerWalls(grid, rowStart, rowEnd, currentCol + 2, colEnd, 'vertical', array);
     }
   }
+}
+
+export function recursiveDivision(grid) {
+  const wallsToAnimate = [];
+  addOuterWalls(grid, wallsToAnimate);
+  const row = grid.length;
+  const col = grid[0].length;
+  addInnerWalls(grid, 2, row - 3, 2, col - 3, 'horizontal', wallsToAnimate);
+  return wallsToAnimate;
 }

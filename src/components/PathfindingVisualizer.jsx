@@ -10,8 +10,8 @@ import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
-const END_NODE_ROW = 10;
-const END_NODE_COL = 35;
+const END_NODE_ROW = 25;
+const END_NODE_COL = 65;
 
 const createNode = function(col, row) {
   return {
@@ -32,9 +32,9 @@ const createNode = function(col, row) {
 
 const getInitialGrid = function() {
   const grid = [];
-  for (let row = 0; row < 20; row++) {
+  for (let row = 0; row < 30; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < 70; col++) {
       currentRow.push(createNode(col, row));
     }
     grid.push(currentRow);
