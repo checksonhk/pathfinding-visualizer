@@ -43,7 +43,9 @@ export default function NavBar(props) {
 
   return (
     <Navbar>
-      <Navbar.Brand>PathFinding Visualizer</Navbar.Brand>
+      <Navbar.Brand>
+        <img src='/logo.png' width='50' height='50' alt='Pathfinding Visualizer Logo'></img>PathFinding Visualizer
+      </Navbar.Brand>
       <Navbar.Toggle aria-controls='navbar-nav' />
       <Navbar.Collapse id='navbar-nav'>
         <Nav fill className='mr-auto'>

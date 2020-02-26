@@ -7,17 +7,10 @@
 }
 
 .node-finish {
-  background-color: red;
-  outline: 1px solid green;
-}
-
-.node-start {
-  background-color: green;
-  outline: 1px solid green;
-}
-
-.node-visited {
-  animation-name: visitedAnimation;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('/end.png');
+  animation-name: draggingAnimation;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
   animation-delay: 0;
@@ -25,6 +18,45 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
+}
+
+.node-start {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('/start.png');
+  animation-name: draggingAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+.node-visited {
+  animation-name: visitedAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes draggingAnimation {
+  0% {
+    transform: scale(0.3);
+    outline: 0px;
+  }
+  50% {
+    transform: scale(1.2);
+    outline: 0px;
+  }
+  100% {
+    transform: scale(1);
+    outline: 0px;
+  }
 }
 
 @keyframes visitedAnimation {
@@ -54,7 +86,13 @@
   width: 25px;
   height: 25px;
   background-color: rgb(12, 53, 71);
-  /* outline: 1px solid rgb(12, 53, 71); */
+  animation-name: draggingAnimation;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
 }
 
 .node-shortest-path {
