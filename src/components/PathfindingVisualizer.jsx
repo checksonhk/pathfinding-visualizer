@@ -7,18 +7,13 @@ import { pathfindingContext } from '../context/pathfindingContext';
 import { basicRandom, recursiveDivision } from '../maze-algorithms/index';
 import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
-const START_NODE_ROW = 10;
-const START_NODE_COL = 15;
-const END_NODE_ROW = 25;
-const END_NODE_COL = 65;
-
-const createNode = function(col, row) {
+const createNode = function(col, row, startNode, finishNode) {
   return {
     id: `${row}-${col}`,
     col,
     row,
-    isStart: row === START_NODE_ROW && col === START_NODE_COL,
-    isFinish: row === END_NODE_ROW && col === END_NODE_COL,
+    isStart: row === startNode.row && col === startNode.col,
+    isFinish: row === finishNode.row && col === finishNode.col,
     distance: Infinity,
     totalDistance: Infinity,
     heuristicDistance: null,
@@ -42,12 +37,13 @@ function resetNode(node) {
   };
 }
 
-const getInitialGrid = function() {
+const getInitialGrid = function(startNode, finishNode) {
   const grid = [];
-  for (let row = 0; row < 30; row++) {
+  // best size is row 30 col 76
+  for (let row = 0; row < 20; row++) {
     const currentRow = [];
-    for (let col = 0; col < 70; col++) {
-      currentRow.push(createNode(col, row));
+    for (let col = 0; col < 50; col++) {
+      currentRow.push(createNode(col, row, startNode, finishNode));
     }
     grid.push(currentRow);
   }
@@ -66,8 +62,10 @@ const getNewGridWithWallToggled = function(grid, row, col) {
   // newGrid[row][col] = newNode;
   // return newGrid;
 
-  /* Hacky Solution for now */
   const node = grid[row][col];
+
+  /* Hacky Solution for now */
+  if (node.isStart || node.isFinish) return;
   const newNode = {
     ...node,
     isWall: !node.isWall,
@@ -76,14 +74,47 @@ const getNewGridWithWallToggled = function(grid, row, col) {
   document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
 };
 
+const dragEnterStartNode = function(grid, row, col) {
+  /* Hacky Solution for now */
+  const node = grid[row][col];
+  // const newNode = {
+  //   ...node,
+  //   isStart: !node.isStart,
+  // };
+  // grid[row][col] = newNode;
+  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+};
+
+const dragLeaveStartNode = function(grid, row, col) {
+  const node = grid[row][col];
+  if (node.isWall) {
+    document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
+  } else {
+    document.getElementById(`node-${node.row}-${node.col}`).className = 'node node';
+  }
+};
+
+const setStartNode = function(grid, row, col) {
+  const node = grid[row][col];
+  const newNode = {
+    ...node,
+    isStart: !node.isStart,
+  };
+  grid[row][col] = newNode;
+  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+};
+
 export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
+  const [movingStart, setMovingStart] = useState(false);
   const { state, dispatch } = useContext(pathfindingContext);
+  const START_NODE = state.startNode;
+  const END_NODE = state.endNode;
 
   useEffect(() => {
-    const grid = getInitialGrid();
+    const grid = getInitialGrid(START_NODE, END_NODE);
     setGrid(grid);
   }, []);
 
@@ -106,7 +137,8 @@ export default function PathfindingVisualizer(props) {
                     mouseIsPressed={mouseIsPressed}
                     onMouseDown={(row, col) => handleMouseDown(row, col)}
                     onMouseEnter={(row, col) => handleMouseEnter(row, col)}
-                    onMouseUp={() => handleMouseUp()}
+                    onMouseLeave={(row, col) => handleMouseLeave(row, col)}
+                    onMouseUp={(row, col) => handleMouseUp(row, col)}
                     row={row}
                     distance={distance}
                     // hdistance={heuristicDistance}
@@ -122,19 +154,37 @@ export default function PathfindingVisualizer(props) {
   );
 
   function handleMouseDown(row, col) {
+    if (grid[row][col].isStart) {
+      setMovingStart(true);
+      dragEnterStartNode(grid, row, col);
+      return;
+    }
     const newGrid = getNewGridWithWallToggled(grid, row, col);
+
     // setGrid(newGrid);
     setMouseIsPressed(true);
   }
 
   function handleMouseEnter(row, col) {
+    if (movingStart) {
+      dragEnterStartNode(grid, row, col);
+    }
     if (!mouseIsPressed) return;
     const newGrid = getNewGridWithWallToggled(grid, row, col);
     // setGrid(newGrid);
   }
 
-  function handleMouseUp() {
+  function handleMouseLeave(row, col) {
+    if (!movingStart) return;
+    dragLeaveStartNode(grid, row, col);
+  }
+
+  function handleMouseUp(row, col) {
     setMouseIsPressed(false);
+    if (movingStart) {
+      setStartNode(grid, row, col);
+    }
+    setMovingStart(false);
   }
 
   function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -184,8 +234,8 @@ export default function PathfindingVisualizer(props) {
   }
 
   function visualizeDijkstra() {
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const endNode = grid[END_NODE_ROW][END_NODE_COL];
+    const startNode = grid[state.startNode.row][state.startNode.col];
+    const endNode = grid[state.endNode.row][state.endNode.col];
     const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
     animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -193,6 +243,7 @@ export default function PathfindingVisualizer(props) {
 
   function visualizeMaze(maze) {
     let wallNodesInOrder;
+
     switch (maze) {
       case 'RECURSIVE_DIVISION':
         wallNodesInOrder = recursiveDivision(grid);

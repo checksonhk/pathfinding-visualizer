@@ -1,7 +1,7 @@
 export default function basicRandom(grid) {
   const wallsToAnimate = [];
   let currentY = grid[0].length - 10;
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 20; i++) {
     for (let counter = 0; counter < 15; counter++) {
       currentY = Math.floor(Math.random() * grid[0].length);
       const currentXOne = Math.floor(grid.length / 2) - counter;
