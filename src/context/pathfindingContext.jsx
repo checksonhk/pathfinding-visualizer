@@ -7,6 +7,10 @@ const pathfindingReducer = (state, action) => {
       return { ...state, currentAlgorithm: action.payload };
     case 'SET_MAZE':
       return { ...state, currentMaze: action.payload };
+    case 'SET_START_NODE':
+      return { ...state, startNode: action.payload };
+    case 'SET_END_NODE':
+      return { ...state, endNode: action.payload };
     default:
       return state;
   }

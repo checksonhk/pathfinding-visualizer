@@ -74,18 +74,23 @@ const getNewGridWithWallToggled = function(grid, row, col) {
   document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
 };
 
-const dragEnterStartNode = function(grid, row, col) {
-  /* Hacky Solution for now */
+const dragEnterNode = function(grid, row, col, type) {
   const node = grid[row][col];
-  // const newNode = {
-  //   ...node,
-  //   isStart: !node.isStart,
-  // };
-  // grid[row][col] = newNode;
-  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+  switch (type) {
+    case 'START':
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+      break;
+    case 'END':
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-finish';
+      break;
+    default:
+      console.log('not a predefined case');
+      return;
+  }
 };
 
-const dragLeaveStartNode = function(grid, row, col) {
+const dragLeaveNode = function(grid, row, col) {
+  console.log('calling drag leave');
   const node = grid[row][col];
   if (node.isWall) {
     document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
@@ -94,14 +99,30 @@ const dragLeaveStartNode = function(grid, row, col) {
   }
 };
 
-const setStartNode = function(grid, row, col) {
+const setNode = function(grid, row, col, type) {
   const node = grid[row][col];
-  const newNode = {
-    ...node,
-    isStart: !node.isStart,
-  };
-  grid[row][col] = newNode;
-  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+  let newNode = {};
+  switch (type) {
+    case 'START':
+      newNode = {
+        ...node,
+        isStart: !node.isStart,
+      };
+      grid[row][col] = newNode;
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-start';
+      break;
+    case 'END':
+      newNode = {
+        ...node,
+        isFinish: !node.isFinish,
+      };
+      grid[row][col] = newNode;
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-finish';
+      break;
+    default:
+      console.log('not a predefined case');
+      return;
+  }
 };
 
 export default function PathfindingVisualizer(props) {
@@ -109,6 +130,7 @@ export default function PathfindingVisualizer(props) {
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [movingStart, setMovingStart] = useState(false);
+  const [movingEnd, setMovingEnd] = useState(false);
   const { state, dispatch } = useContext(pathfindingContext);
   const START_NODE = state.startNode;
   const END_NODE = state.endNode;
@@ -156,18 +178,22 @@ export default function PathfindingVisualizer(props) {
   function handleMouseDown(row, col) {
     if (grid[row][col].isStart) {
       setMovingStart(true);
-      dragEnterStartNode(grid, row, col);
-      return;
+      dragEnterNode(grid, row, col, 'START');
+    } else if (grid[row][col].isFinish) {
+      setMovingEnd(true);
+      dragEnterNode(grid, row, col, 'END');
+    } else {
+      const newGrid = getNewGridWithWallToggled(grid, row, col);
+      // setGrid(newGrid);
+      setMouseIsPressed(true);
     }
-    const newGrid = getNewGridWithWallToggled(grid, row, col);
-
-    // setGrid(newGrid);
-    setMouseIsPressed(true);
   }
 
   function handleMouseEnter(row, col) {
     if (movingStart) {
-      dragEnterStartNode(grid, row, col);
+      dragEnterNode(grid, row, col, 'START');
+    } else if (movingEnd) {
+      dragEnterNode(grid, row, col, 'END');
     }
     if (!mouseIsPressed) return;
     const newGrid = getNewGridWithWallToggled(grid, row, col);
@@ -175,16 +201,22 @@ export default function PathfindingVisualizer(props) {
   }
 
   function handleMouseLeave(row, col) {
-    if (!movingStart) return;
-    dragLeaveStartNode(grid, row, col);
+    if (movingStart || movingEnd) {
+      dragLeaveNode(grid, row, col);
+    }
   }
 
   function handleMouseUp(row, col) {
-    setMouseIsPressed(false);
     if (movingStart) {
-      setStartNode(grid, row, col);
+      setNode(grid, row, col, 'START');
+      dispatch({ type: 'SET_START_NODE', payload: { row, col } });
+    } else if (movingEnd) {
+      setNode(grid, row, col, 'END');
+      dispatch({ type: 'SET_END_NODE', payload: { row, col } });
     }
+    setMouseIsPressed(false);
     setMovingStart(false);
+    setMovingEnd(false);
   }
 
   function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
