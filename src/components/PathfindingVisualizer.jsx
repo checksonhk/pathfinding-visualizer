@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Node from './Node';
-import './PathfindingVisualizer.css';
-import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import NavBar from './NavBar';
+import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { basicRandom, recursiveDivision } from '../maze-algorithms/index';
 import { bi_bfs } from '../algorithms/bi-directional-bfs';
+
+import './PathfindingVisualizer.scss';
 
 const createNode = function(col, row, startNode, finishNode) {
   return {

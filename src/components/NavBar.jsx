@@ -3,6 +3,8 @@ import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { getNodesInShortestPathOrder } from '../algorithms/astar';
 
+import './NavBar.scss';
+
 const pathfindingAlgorithms = {
   'Depth First Search': 'DEPTH_FIRST_SEARCH',
   'Breadth First Search': 'BREADTH_FIRST_SEARCH',
@@ -19,6 +21,7 @@ const speeds = {
 
 export default function NavBar(props) {
   console.log('RENDERING NAVBAR');
+  const [algorithm, setAlgorithm] = useState('Depth First Search');
   const [speed, setSpeed] = useState('');
   const { state, dispatch } = useContext(pathfindingContext);
 
@@ -28,7 +31,8 @@ export default function NavBar(props) {
   };
 
   function handleAlgorithm(value) {
-    dispatch({ type: 'SET_ALGORITHM', payload: value });
+    setAlgorithm(value);
+    dispatch({ type: 'SET_ALGORITHM', payload: pathfindingAlgorithms[value] });
   }
 
   function handleMaze(value) {
@@ -42,16 +46,16 @@ export default function NavBar(props) {
   }
 
   return (
-    <Navbar>
+    <Navbar bg='dark' variant='dark'>
       <Navbar.Brand>
-        <img src='/logo.png' width='50' height='50' alt='Pathfinding Visualizer Logo'></img>PathFinding Visualizer
+        <img src='/logo.png' width='35' height='35' alt='Pathfinding Visualizer Logo'></img>PathFinding Visualizer
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='navbar-nav' />
       <Navbar.Collapse id='navbar-nav'>
         <Nav fill className='mr-auto'>
           <NavDropdown title='Algorithms' id='algorithms-nav-dropdown'>
             {Object.keys(pathfindingAlgorithms).map(algorithm => (
-              <NavDropdown.Item key={algorithm} onClick={e => handleAlgorithm(pathfindingAlgorithms[algorithm])}>
+              <NavDropdown.Item key={algorithm} onClick={e => handleAlgorithm(algorithm)}>
                 {algorithm}
               </NavDropdown.Item>
             ))}
@@ -64,7 +68,9 @@ export default function NavBar(props) {
             ))}
           </NavDropdown>
           <Nav.Item>
-            <Button onClick={props.visualizeClick}>Visualize {state.currentAlgorithm}</Button>
+            <Button variant='primary' onClick={props.visualizeClick}>
+              Visualize {algorithm}
+            </Button>
           </Nav.Item>
           <Nav.Link onClick={props.resetClick}>Clear Board</Nav.Link>
           <Nav.Link onClick={props.clearClick}>Clear Path</Nav.Link>
@@ -77,9 +83,6 @@ export default function NavBar(props) {
           ))}
         </NavDropdown>
       </Navbar.Collapse>
-      {/* <li>Clear Walls & Weights</li>
-      <li>Clear Path</li>
-      <li>Speed</li> */}
     </Navbar>
   );
 }

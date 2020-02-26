@@ -1,5 +1,5 @@
 import React from 'react';
-import './Node.css';
+import './Node.scss';
 
 function Node(props) {
   console.log('RENDERING NODE');

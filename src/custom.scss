@@ -1,0 +1,30 @@
+/* -------begin customization-------- */ /* simply assign the value */
+// $dark: #38302e;
+$primary: #6f6866;
+$secondary: #788585;
+$tertiary: #9caea9;
+$light: #ccdad1;
+
+/*
+$theme-colors: (
+  "primary":    ..,
+  "secondary":  ..,
+  "success":    ..,
+  "info":       ..,
+  "warning":    ..,
+  "danger":     ..,
+  "light":      ..,
+  "dark":       ..
+);
+*/
+
+$theme-colors: (
+  primary: $primary,
+  secondary: $secondary,
+  tertiary: $tertiary,
+  // dark: $dark,,,
+);
+/* -------end customization-------- */
+
+/* finally, import Bootstrap to set the changes! */
+@import '~bootstrap/scss/bootstrap';

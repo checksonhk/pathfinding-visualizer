@@ -1,8 +1,9 @@
 import React from 'react';
-import './App.css';
 import PathfindingVisualizer from './components/PathfindingVisualizer';
 // import bootstrap css
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import './custom.scss';
+import './App.scss';
 
 import PathfindingContextProvider from './context/pathfindingContext';
 

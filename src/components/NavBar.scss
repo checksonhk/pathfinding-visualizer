@@ -1,0 +1,21 @@
+@import '../custom.scss';
+
+.navbar {
+  .dropdown-menu {
+    background-color: $dark;
+  }
+
+  .dropdown.show a {
+    background-color: $dark;
+    color: white;
+  }
+
+  .dropdown.show a:hover {
+    background-color: $primary;
+    color: white;
+  }
+}
+
+#speed-nav-dropdown {
+  color: white;
+}
