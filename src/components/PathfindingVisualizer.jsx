@@ -224,7 +224,8 @@ export default function PathfindingVisualizer(props) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
+        }, state.speed.visited * i);
+        // optimal 10
         return;
       }
       setTimeout(() => {
@@ -232,7 +233,8 @@ export default function PathfindingVisualizer(props) {
         // hacky solution to minimize rerenders
         // TODO: look into useRef to achieve similar result
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
-      }, 10 * i);
+      }, state.speed.visited * i);
+      // optimal 10
     }
   }
 
@@ -241,7 +243,8 @@ export default function PathfindingVisualizer(props) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
-      }, 50 * i);
+      }, state.speed.shortestPath * i);
+      // optimal 50
     }
   }
 

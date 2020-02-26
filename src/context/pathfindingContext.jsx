@@ -1,6 +1,12 @@
 import React, { createContext, useReducer } from 'react';
 export const pathfindingContext = createContext();
 
+const speed = {
+  Fast: { visited: 10, shortestPath: 50 },
+  Average: { visited: 40, shortestPath: 75 },
+  Slow: { visited: 70, shortestPath: 100 },
+};
+
 const pathfindingReducer = (state, action) => {
   switch (action.type) {
     case 'SET_ALGORITHM':
@@ -11,16 +17,18 @@ const pathfindingReducer = (state, action) => {
       return { ...state, startNode: action.payload };
     case 'SET_END_NODE':
       return { ...state, endNode: action.payload };
+    case 'SET_SPEED':
+      return { ...state, speed: action.payload };
     default:
       return state;
   }
 };
-
 const initialState = {
   startNode: { row: 10, col: 15 },
   endNode: { row: 10, col: 35 },
   currentAlgorithm: 'DEPTH_FIRST_SEARCH',
   currentMaze: 'RECURSIVE_DIVISION',
+  speed: speed.Fast,
 };
 
 export default function PathfindingContextProvider(props) {
