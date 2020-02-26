@@ -71,7 +71,7 @@ const getNewGridWithWallToggled = function(grid, row, col) {
     isWall: !node.isWall,
   };
   grid[row][col] = newNode;
-  document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
+  document.getElementById(`node-${node.row}-${node.col}`).className = 'node-wall';
 };
 
 const dragEnterNode = function(grid, row, col, type) {
@@ -93,7 +93,7 @@ const dragLeaveNode = function(grid, row, col) {
   console.log('calling drag leave');
   const node = grid[row][col];
   if (node.isWall) {
-    document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
+    document.getElementById(`node-${node.row}-${node.col}`).className = 'node-wall';
   } else {
     document.getElementById(`node-${node.row}-${node.col}`).className = 'node node';
   }
@@ -299,7 +299,7 @@ export default function PathfindingVisualizer(props) {
         const node = visitedNodesInOrder[i];
         // hacky solution to minimize rerenders
         // TODO: look into useRef to achieve similar result
-        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-wall';
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node-wall';
       }, 10 * i);
     }
   }
@@ -348,7 +348,7 @@ export default function PathfindingVisualizer(props) {
           document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
           continue;
         } else if (newNode.isWall) {
-          document.getElementById(`node-${row}-${col}`).className = 'node node-wall';
+          document.getElementById(`node-${row}-${col}`).className = 'node-wall';
         } else {
           document.getElementById(`node-${row}-${col}`).className = 'node';
         }
