@@ -21,4 +21,5 @@ function Node(props) {
   );
 }
 
-export default React.memo(Node);
+export default Node;
+// export default React.memo(Node);

@@ -142,7 +142,7 @@ export default function PathfindingVisualizer(props) {
 
   return (
     <div id='pathfinding-visualizer'>
-      <NavBar visualizeClick={visualizeDijkstra} mazeClick={visualizeMaze} resetClick={resetGrid} />
+      <NavBar visualizeClick={visualizeDijkstra} mazeClick={visualizeMaze} resetClick={resetGrid} clearClick={clearPath} />
       <div className='grid'>
         {grid.map((row, rowIdx) => {
           return (
@@ -323,6 +323,32 @@ export default function PathfindingVisualizer(props) {
         const newNode = resetNode(node);
         grid[row][col] = newNode;
         document.getElementById(`node-${row}-${col}`).className = 'node';
+      }
+    }
+    setGrid(newGrid);
+  }
+
+  function clearPath() {
+    const newGrid = grid.slice();
+    for (let row = 0; row < newGrid.length; row++) {
+      for (let col = 0; col < newGrid[row].length; col++) {
+        const node = grid[row][col];
+        let newNode = resetNode(node);
+        if (node.isWall) {
+          newNode = { ...newNode, isWall: true };
+        }
+        grid[row][col] = newNode;
+        if (newNode.isStart) {
+          document.getElementById(`node-${row}-${col}`).className = 'node node-start';
+          continue;
+        } else if (newNode.isFinish) {
+          document.getElementById(`node-${row}-${col}`).className = 'node node-finish';
+          continue;
+        } else if (newNode.isWall) {
+          document.getElementById(`node-${row}-${col}`).className = 'node node-wall';
+        } else {
+          document.getElementById(`node-${row}-${col}`).className = 'node';
+        }
       }
     }
     setGrid(newGrid);
