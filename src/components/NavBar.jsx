@@ -28,6 +28,8 @@ export default function NavBar(props) {
   const mazeAlgorithms = {
     'Recursive Division': 'RECURSIVE_DIVISION',
     'Basic Random': 'BASIC_RANDOM',
+    'Recursive Vertical Bias': 'RECURSIVE_VERTICAL',
+    'Recursive Horizontal Bias': 'RECURSIVE_HORIZONTAL',
   };
 
   function handleAlgorithm(value) {

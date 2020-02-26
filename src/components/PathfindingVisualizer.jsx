@@ -3,7 +3,7 @@ import Node from './Node';
 import NavBar from './NavBar';
 import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
 import { pathfindingContext } from '../context/pathfindingContext';
-import { basicRandom, recursiveDivision } from '../maze-algorithms/index';
+import { basicRandom, recursiveDivision, recursiveVertical, recursiveHorizontal } from '../maze-algorithms/index';
 import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
 import './PathfindingVisualizer.scss';
@@ -41,9 +41,9 @@ function resetNode(node) {
 const getInitialGrid = function(startNode, finishNode) {
   const grid = [];
   // best size is row 30 col 76
-  for (let row = 0; row < 20; row++) {
+  for (let row = 0; row < 30; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < 76; col++) {
       currentRow.push(createNode(col, row, startNode, finishNode));
     }
     grid.push(currentRow);
@@ -143,7 +143,7 @@ export default function PathfindingVisualizer(props) {
 
   return (
     <div id='pathfinding-visualizer'>
-      <NavBar visualizeClick={visualizeDijkstra} mazeClick={visualizeMaze} resetClick={resetGrid} clearClick={clearPath} />
+      <NavBar visualizeClick={visualizePath} mazeClick={visualizeMaze} resetClick={resetGrid} clearClick={clearPath} />
       <div className='grid'>
         {grid.map((row, rowIdx) => {
           return (
@@ -220,7 +220,7 @@ export default function PathfindingVisualizer(props) {
     setMovingEnd(false);
   }
 
-  function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+  function animatePath(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
@@ -269,12 +269,12 @@ export default function PathfindingVisualizer(props) {
     }
   }
 
-  function visualizeDijkstra() {
+  function visualizePath() {
     const startNode = grid[state.startNode.row][state.startNode.col];
     const endNode = grid[state.endNode.row][state.endNode.col];
     const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
-    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   function visualizeMaze(maze) {
@@ -286,6 +286,12 @@ export default function PathfindingVisualizer(props) {
         break;
       case 'BASIC_RANDOM':
         wallNodesInOrder = basicRandom(grid);
+        break;
+      case 'RECURSIVE_VERTICAL':
+        wallNodesInOrder = recursiveVertical(grid);
+        break;
+      case 'RECURSIVE_HORIZONTAL':
+        wallNodesInOrder = recursiveHorizontal(grid);
         break;
       default:
         wallNodesInOrder = recursiveDivision(grid);
