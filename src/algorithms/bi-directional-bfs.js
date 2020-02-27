@@ -64,6 +64,7 @@ function _bi_bfs(grid, startNode, finishNode) {
         console.log('startingNode', startingCurrentNode);
         return [startingCurrentNode, visitedNodesInOrder];
       } else if (exploredNodesStart[finishCurrentNode.id]) {
+        console.log('VISITED NODES', visitedNodesInOrder);
         console.log('EndingNode', finishCurrentNode);
         return [finishCurrentNode, visitedNodesInOrder];
       } else if (startingCurrentNode.id === finishCurrentNode.id) {
@@ -82,23 +83,20 @@ function _bi_bfs(grid, startNode, finishNode) {
 
     const currentNeighborsStart = getUnvisitedNeighbors(startingCurrentNode, grid);
     currentNeighborsStart.forEach(neighbor => {
-      // if (!exploredNodes[neighbor.id]) {
-      neighbor.distance = startingCurrentNode.distance + 1;
-      neighbor.previousNode = startingCurrentNode;
-      if (neighbor.id === '9-16') {
-        console.log('here');
+      if (!exploredNodesStart[neighbor.id]) {
+        neighbor.distance = startingCurrentNode.distance + 1;
+        neighbor.previousNode = startingCurrentNode;
+        unvisitedNodesStart.push(neighbor);
       }
-      unvisitedNodesStart.push(neighbor);
-      // }
     });
 
     const currentNeighborsFinish = getUnvisitedNeighbors(finishCurrentNode, grid);
     currentNeighborsFinish.forEach(neighbor => {
-      // if (!exploredNodes[neighbor.id]) {
-      neighbor.biDistance = finishCurrentNode.biDistance + 1;
-      neighbor.biPreviousNode = finishCurrentNode;
-      unvisitedNodesFinish.push(neighbor);
-      // }
+      if (!exploredNodesFinish[neighbor.id]) {
+        neighbor.biDistance = finishCurrentNode.biDistance + 1;
+        neighbor.biPreviousNode = finishCurrentNode;
+        unvisitedNodesFinish.push(neighbor);
+      }
     });
   }
   return -1;

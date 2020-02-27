@@ -11,6 +11,14 @@ const pathfindingAlgorithms = {
   'Greedy Best Search': 'BEST_FIRST_SEARCH',
   Djisktra: 'DJISKTRA',
   'A*': 'A_STAR',
+  'Bi Directional BFS': 'BI_DIRECTIONAL_BFS',
+};
+
+const mazeAlgorithms = {
+  'Recursive Division': 'RECURSIVE_DIVISION',
+  'Basic Random': 'BASIC_RANDOM',
+  'Recursive Vertical Bias': 'RECURSIVE_VERTICAL',
+  'Recursive Horizontal Bias': 'RECURSIVE_HORIZONTAL',
 };
 
 const speeds = {
@@ -24,13 +32,6 @@ export default function NavBar(props) {
   const [algorithm, setAlgorithm] = useState('Depth First Search');
   const [speed, setSpeed] = useState('');
   const { state, dispatch } = useContext(pathfindingContext);
-
-  const mazeAlgorithms = {
-    'Recursive Division': 'RECURSIVE_DIVISION',
-    'Basic Random': 'BASIC_RANDOM',
-    'Recursive Vertical Bias': 'RECURSIVE_VERTICAL',
-    'Recursive Horizontal Bias': 'RECURSIVE_HORIZONTAL',
-  };
 
   function handleAlgorithm(value) {
     setAlgorithm(value);
