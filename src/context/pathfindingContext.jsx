@@ -25,8 +25,8 @@ const pathfindingReducer = (state, action) => {
 };
 const initialState = {
   startNode: { row: 10, col: 15 },
-  endNode: { row: 10, col: 35 },
-  currentAlgorithm: 'DEPTH_FIRST_SEARCH',
+  endNode: { row: 10, col: 25 },
+  currentAlgorithm: 'BI_DIRECTIONAL_BFS',
   currentMaze: 'RECURSIVE_DIVISION',
   speed: speed.Fast,
 };

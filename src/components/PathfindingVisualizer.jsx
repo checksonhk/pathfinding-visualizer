@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Node from './Node';
 import NavBar from './NavBar';
-import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar } from '../algorithms/index';
+import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar, getBiDirectionalShortestPath, bi_bfs } from '../algorithms/index';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { basicRandom, recursiveDivision, recursiveVertical, recursiveHorizontal } from '../maze-algorithms/index';
-import { bi_bfs } from '../algorithms/bi-directional-bfs';
 
 import './PathfindingVisualizer.scss';
 
@@ -16,11 +15,13 @@ const createNode = function(col, row, startNode, finishNode) {
     isStart: row === startNode.row && col === startNode.col,
     isFinish: row === finishNode.row && col === finishNode.col,
     distance: Infinity,
+    biDistance: Infinity,
     totalDistance: Infinity,
     heuristicDistance: null,
     isVisited: false,
     isWall: false,
     previousNode: null,
+    biPreviousNode: null,
     weight: 0,
   };
 };
@@ -41,9 +42,9 @@ function resetNode(node) {
 const getInitialGrid = function(startNode, finishNode) {
   const grid = [];
   // best size is row 30 col 76
-  for (let row = 0; row < 30; row++) {
+  for (let row = 0; row < 20; row++) {
     const currentRow = [];
-    for (let col = 0; col < 76; col++) {
+    for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row, startNode, finishNode));
     }
     grid.push(currentRow);
@@ -91,7 +92,6 @@ const dragEnterNode = function(grid, row, col, type) {
 };
 
 const dragLeaveNode = function(grid, row, col) {
-  console.log('calling drag leave');
   const node = grid[row][col];
   if (node.isWall) {
     document.getElementById(`node-${node.row}-${node.col}`).className = 'node-wall';
@@ -149,7 +149,7 @@ export default function PathfindingVisualizer(props) {
           return (
             <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart, isWall, distance, totalDistance, heuristicDistance } = node;
+                const { row, col, isFinish, isStart, isWall, distance, biDistance, totalDistance, heuristicDistance } = node;
                 return (
                   <Node
                     key={nodeIdx}
@@ -164,9 +164,7 @@ export default function PathfindingVisualizer(props) {
                     onMouseUp={(row, col) => handleMouseUp(row, col)}
                     row={row}
                     distance={distance}
-                    // hdistance={heuristicDistance}
-                    // tdistance={totalDistance}
-                  ></Node>
+                    biDistance={biDistance}></Node>
                 );
               })}
             </div>
@@ -272,8 +270,16 @@ export default function PathfindingVisualizer(props) {
   function visualizePath() {
     const startNode = grid[state.startNode.row][state.startNode.col];
     const endNode = grid[state.endNode.row][state.endNode.col];
-    const visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+    let visitedNodesInOrder;
+    let middleNode;
+    let nodesInShortestPathOrder;
+    if (state.currentAlgorithm === 'BI_DIRECTIONAL_BFS') {
+      [visitedNodesInOrder, middleNode] = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
+      nodesInShortestPathOrder = getBiDirectionalShortestPath(middleNode);
+    } else {
+      visitedNodesInOrder = setAlgorithm(state.currentAlgorithm, grid, startNode, endNode);
+      nodesInShortestPathOrder = getNodesInShortestPathOrder(endNode);
+    }
     animatePath(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
