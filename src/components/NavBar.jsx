@@ -11,7 +11,7 @@ const pathfindingAlgorithms = {
   'Greedy Best Search': 'BEST_FIRST_SEARCH',
   Djisktra: 'DJISKTRA',
   'A*': 'A_STAR',
-  'Bi Directional BFS': 'BI_DIRECTIONAL_BFS',
+  // 'Bi Directional BFS': 'BI_DIRECTIONAL_BFS',
 };
 
 const mazeAlgorithms = {

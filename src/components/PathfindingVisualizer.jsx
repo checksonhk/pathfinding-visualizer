@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Node from './Node';
 import NavBar from './NavBar';
+import Legend from './Legend';
 import { dijkstra, getNodesInShortestPathOrder, dfs, bfs, bestfs, astar, getBiDirectionalShortestPath, bi_bfs } from '../algorithms/index';
 import { pathfindingContext } from '../context/pathfindingContext';
 import { basicRandom, recursiveDivision, recursiveVertical, recursiveHorizontal } from '../maze-algorithms/index';
@@ -42,9 +43,9 @@ function resetNode(node) {
 const getInitialGrid = function(startNode, finishNode) {
   const grid = [];
   // best size is row 30 col 76
-  for (let row = 0; row < 20; row++) {
+  for (let row = 0; row < 30; row++) {
     const currentRow = [];
-    for (let col = 0; col < 50; col++) {
+    for (let col = 0; col < 76; col++) {
       currentRow.push(createNode(col, row, startNode, finishNode));
     }
     grid.push(currentRow);
@@ -144,6 +145,7 @@ export default function PathfindingVisualizer(props) {
   return (
     <div id='pathfinding-visualizer'>
       <NavBar visualizeClick={visualizePath} mazeClick={visualizeMaze} resetClick={resetGrid} clearClick={clearPath} />
+      <Legend />
       <div className='grid'>
         {grid.map((row, rowIdx) => {
           return (

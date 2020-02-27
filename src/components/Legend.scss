@@ -1,0 +1,51 @@
+#pathfinding-legend {
+  margin-top: 25px;
+}
+
+.legend-container {
+  width: 100%;
+  display: flex;
+  // justify-content: space-around;
+  align-items: center;
+  font-size: large;
+
+  li {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin-left: 2.5%;
+    .legend-text {
+      margin-left: 10px;
+    }
+  }
+}
+
+.legend {
+  &-wall {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: rgb(12, 53, 71);
+  }
+  &-unvisited {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: #d3d3d3;
+  }
+  &-visited {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: rgba(0, 190, 218, 0.75);
+  }
+  &-shortest-path {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: #ffa41b;
+  }
+  &-msg {
+    font-size: large;
+  }
+}
