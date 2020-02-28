@@ -3,7 +3,7 @@ import './Node.scss';
 
 function Node(props) {
   console.log('RENDERING NODE');
-  const { row, col, isFinish, isStart, isWall, onMouseDown, onMouseEnter, onMouseLeave, onMouseUp, distance } = props;
+  const { row, col, isFinish, isStart, isWall, onMouseDown, onMouseEnter, onMouseLeave, onMouseUp, distance, showNumbers } = props;
   const extraClassName = isFinish ? 'node-finish' : isStart ? 'node-start' : isWall ? 'node-wall' : '';
 
   return (
@@ -14,7 +14,7 @@ function Node(props) {
       onMouseEnter={() => onMouseEnter(row, col)}
       onMouseLeave={() => onMouseLeave(row, col)}
       onMouseUp={() => onMouseUp(row, col)}>
-      {/* {distance !== Infinity ? props.distance : ''} */}
+      {showNumbers && <span className='node-distance'>{distance !== Infinity && props.distance}</span>}
     </div>
   );
 }

@@ -19,16 +19,19 @@ const pathfindingReducer = (state, action) => {
       return { ...state, endNode: action.payload };
     case 'SET_SPEED':
       return { ...state, speed: action.payload };
+    case 'TOGGLE_NUMBERS':
+      return { ...state, showNumbers: !state.showNumbers };
     default:
       return state;
   }
 };
 const initialState = {
   startNode: { row: 10, col: 15 },
-  endNode: { row: 10, col: 25 },
+  endNode: { row: 10, col: 55 },
   currentAlgorithm: 'DEPTH_FIRST_SEARCH',
   currentMaze: 'RECURSIVE_DIVISION',
   speed: speed.Fast,
+  showNumbers: false,
 };
 
 export default function PathfindingContextProvider(props) {

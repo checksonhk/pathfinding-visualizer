@@ -165,6 +165,7 @@ export default function PathfindingVisualizer(props) {
                     onMouseLeave={(row, col) => handleMouseLeave(row, col)}
                     onMouseUp={(row, col) => handleMouseUp(row, col)}
                     row={row}
+                    showNumbers={state.showNumbers}
                     distance={distance}
                     biDistance={biDistance}></Node>
                 );

@@ -48,6 +48,10 @@ export default function NavBar(props) {
     dispatch({ type: 'SET_SPEED', payload: speeds[value] });
   }
 
+  function handleToggle(value) {
+    dispatch({ type: 'TOGGLE_NUMBERS' });
+  }
+
   return (
     <Navbar bg='dark' variant='dark'>
       <Navbar.Brand>
@@ -86,6 +90,7 @@ export default function NavBar(props) {
             </NavDropdown.Item>
           ))}
         </NavDropdown>
+        <Nav.Link onClick={handleToggle}>Show Numbers</Nav.Link>
       </Navbar.Collapse>
     </Navbar>
   );
