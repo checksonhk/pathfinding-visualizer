@@ -89,6 +89,9 @@
   display: inline-block;
   width: 25px;
   height: 25px;
+  margin-left: -1px;
+  margin-bottom: -1px;
+
   background-color: rgb(12, 53, 71);
   animation-name: draggingAnimation;
   animation-duration: 1s;
