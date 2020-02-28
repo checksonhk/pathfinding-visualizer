@@ -2,7 +2,7 @@ import React from 'react';
 import './Node.scss';
 
 function Node(props) {
-  console.log('RENDERING NODE');
+  // console.log('RENDERING NODE');
   const {
     row,
     col,

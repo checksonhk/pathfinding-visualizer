@@ -1,15 +1,18 @@
 import React from 'react';
+import StartImg from '../imgs/start.png';
+import EndImg from '../imgs/end.png';
+
 import './Legend.scss';
 export default function Legend(props) {
   return (
     <div id='pathfinding-legend'>
       <ul className='legend-container'>
         <li>
-          <img src={'./start.png'} alt='start node'></img>
+          <img src={StartImg} alt='start node'></img>
           <span className='legend-text'>Start Node</span>
         </li>
         <li>
-          <img src={'./end.png'} alt='target node'></img>
+          <img src={EndImg} alt='target node'></img>
           <span className='legend-text'>Target Node</span>
         </li>
         <li>

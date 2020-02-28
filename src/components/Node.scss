@@ -13,7 +13,7 @@
 .node-finish {
   background-repeat: no-repeat;
   background-position: center center;
-  background-image: url('/end.png');
+  background-image: url('../imgs/end.png');
   animation-name: draggingAnimation;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
@@ -27,7 +27,7 @@
 .node-start {
   background-repeat: no-repeat;
   background-position: center center;
-  background-image: url('/start.png');
+  background-image: url('../imgs/start.png');
   animation-name: draggingAnimation;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;

@@ -35,4 +35,4 @@ $theme-colors: (
 /* -------end customization-------- */
 
 /* finally, import Bootstrap to set the changes! */
-@import '~bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap/scss/bootstrap';

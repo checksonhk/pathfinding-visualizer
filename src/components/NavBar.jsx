@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { pathfindingContext } from '../context/pathfindingContext';
-import { getNodesInShortestPathOrder } from '../algorithms/astar';
-
+import Logo from '../imgs/logo.svg';
 import './NavBar.scss';
 
 const pathfindingAlgorithms = {
@@ -55,7 +54,7 @@ export default function NavBar(props) {
   return (
     <Navbar bg='dark' variant='dark'>
       <Navbar.Brand>
-        <img src='/logo.svg' width='35' height='35' alt='Pathfinding Visualizer Logo'></img>
+        <img src={Logo} width='35' height='35' alt='Pathfinding Visualizer Logo'></img>
         <span className='navbar-brand-text'>PathFinding Visualizer</span>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='navbar-nav' />

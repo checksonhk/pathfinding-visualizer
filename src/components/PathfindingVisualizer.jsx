@@ -143,7 +143,7 @@ const updatedGridWithWalls = function(grid, nodesToUpdate) {
 };
 
 export default function PathfindingVisualizer(props) {
-  console.log('RENDERING GRID');
+  // console.log('RENDERING GRID');
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const { state, dispatch } = useContext(pathfindingContext);
