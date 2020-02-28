@@ -151,7 +151,7 @@ export default function PathfindingVisualizer(props) {
           return (
             <div key={rowIdx} className='grid-row'>
               {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart, isWall, distance, biDistance, totalDistance, heuristicDistance } = node;
+                const { row, col, isFinish, isStart, isWall, distance, totalDistance } = node;
                 return (
                   <Node
                     key={nodeIdx}
@@ -167,7 +167,7 @@ export default function PathfindingVisualizer(props) {
                     row={row}
                     showNumbers={state.showNumbers}
                     distance={distance}
-                    biDistance={biDistance}></Node>
+                    totalDistance={totalDistance}></Node>
                 );
               })}
             </div>
