@@ -5,7 +5,9 @@
   width: 25px;
   height: 25px;
   font-size: 0.6rem;
-  outline: 1px solid $light;
+  border: 1px solid $light;
+  margin-left: -1px;
+  margin-bottom: -1px;
 }
 
 .node-finish {
@@ -49,15 +51,15 @@
 @keyframes draggingAnimation {
   0% {
     transform: scale(0.3);
-    outline: 0px;
+    border: 0px;
   }
   50% {
     transform: scale(1.2);
-    outline: 0px;
+    border: 0px;
   }
   100% {
     transform: scale(1);
-    outline: 0px;
+    border: 0px;
   }
 }
 

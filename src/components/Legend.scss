@@ -1,3 +1,5 @@
+@import '../custom.scss';
+
 #pathfinding-legend {
   margin-top: 25px;
 }
@@ -35,7 +37,7 @@
     display: inline-block;
     width: 25px;
     height: 25px;
-    background-color: #d3d3d3;
+    border: 2px solid $light;
   }
   &-visited {
     display: inline-block;
@@ -51,5 +53,7 @@
   }
   &-msg {
     font-size: large;
+    padding: 4px 0;
+    height: 50px;
   }
 }

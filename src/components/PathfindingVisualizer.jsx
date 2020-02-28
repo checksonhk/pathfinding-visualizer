@@ -42,10 +42,10 @@ function resetNode(node) {
 
 const getInitialGrid = function(startNode, finishNode) {
   const grid = [];
-  // best size is row 30 col 76
-  for (let row = 0; row < 30; row++) {
+  // best size is row 31 col 78
+  for (let row = 0; row < 31; row++) {
     const currentRow = [];
-    for (let col = 0; col < 76; col++) {
+    for (let col = 0; col < 78; col++) {
       currentRow.push(createNode(col, row, startNode, finishNode));
     }
     grid.push(currentRow);
