@@ -8,6 +8,8 @@ import { basicRandom, recursiveDivision, recursiveVertical, recursiveHorizontal 
 
 import './PathfindingVisualizer.scss';
 
+const nodesToUpdate = [];
+
 const createNode = function(col, row, startNode, finishNode) {
   return {
     id: `${row}-${col}`,
@@ -53,31 +55,20 @@ const getInitialGrid = function(startNode, finishNode) {
   return grid;
 };
 
-const getNewGridWithWallToggled = function(grid, row, col) {
-  /* preformance issues - too many rerenders*/
-  // const newGrid = grid.slice();
-  // const node = newGrid[row][col];
-  // const newNode = {
-  //   ...node,
-  //   isWall: !node.isWall,
-  // };
-  // // update the newNode
-  // newGrid[row][col] = newNode;
-  // return newGrid;
+// const getNewGridWithWallToggled = function(grid, row, col) {
+//   /* preformance issues - too many rerenders*/
+//   // const newGrid = grid.slice();
+//   // const node = newGrid[row][col];
+//   // const newNode = {
+//   //   ...node,
+//   //   isWall: !node.isWall,
+//   // };
+//   // // update the newNode
+//   // newGrid[row][col] = newNode;
+//   // return newGrid;
+// };
 
-  const node = grid[row][col];
-
-  /* Hacky Solution for now */
-  if (node.isStart || node.isFinish) return;
-  const newNode = {
-    ...node,
-    isWall: !node.isWall,
-  };
-  grid[row][col] = newNode;
-  document.getElementById(`node-${node.row}-${node.col}`).className = 'node-wall';
-};
-
-const dragEnterNode = function(grid, row, col, type) {
+const dragEnterNode = function(grid, row, col, type, array = null) {
   const node = grid[row][col];
   switch (type) {
     case 'START':
@@ -85,6 +76,21 @@ const dragEnterNode = function(grid, row, col, type) {
       break;
     case 'END':
       document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-finish';
+      break;
+    case 'WALL':
+      /* Hacky Solution for now */
+      if (node.isStart || node.isFinish) return;
+      // const newNode = {
+      //   ...node,
+      //   isWall: !node.isWall,
+      // };
+      // grid[row][col] = newNode;
+
+      /* changed to batch update wall Nodes */
+      const newNode = { ...node, isWall: !node.isWall };
+      array.push(newNode);
+
+      document.getElementById(`node-${node.row}-${node.col}`).className = node.isWall ? 'node' : 'node-wall';
       break;
     default:
       console.log('not a predefined case');
@@ -127,6 +133,15 @@ const setNode = function(grid, row, col, type) {
   }
 };
 
+const updatedGridWithWalls = function(grid, nodesToUpdate) {
+  // Manually Batch Update Wall Nodes
+  const newGrid = grid.slice();
+  nodesToUpdate.forEach(node => {
+    newGrid[node.row][node.col] = node;
+  });
+  return newGrid;
+};
+
 export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
   const [grid, setGrid] = useState([]);
@@ -134,6 +149,7 @@ export default function PathfindingVisualizer(props) {
   const [movingStart, setMovingStart] = useState(false);
   const [movingEnd, setMovingEnd] = useState(false);
   const { state, dispatch } = useContext(pathfindingContext);
+
   const START_NODE = state.startNode;
   const END_NODE = state.endNode;
 
@@ -185,21 +201,15 @@ export default function PathfindingVisualizer(props) {
       setMovingEnd(true);
       dragEnterNode(grid, row, col, 'END');
     } else {
-      const newGrid = getNewGridWithWallToggled(grid, row, col);
-      // setGrid(newGrid);
       setMouseIsPressed(true);
+      dragEnterNode(grid, row, col, 'WALL', nodesToUpdate);
     }
   }
 
   function handleMouseEnter(row, col) {
-    if (movingStart) {
-      dragEnterNode(grid, row, col, 'START');
-    } else if (movingEnd) {
-      dragEnterNode(grid, row, col, 'END');
-    }
-    if (!mouseIsPressed) return;
-    const newGrid = getNewGridWithWallToggled(grid, row, col);
-    // setGrid(newGrid);
+    if (movingStart) dragEnterNode(grid, row, col, 'START');
+    if (movingEnd) dragEnterNode(grid, row, col, 'END');
+    if (mouseIsPressed) dragEnterNode(grid, row, col, 'WALL', nodesToUpdate);
   }
 
   function handleMouseLeave(row, col) {
@@ -212,10 +222,21 @@ export default function PathfindingVisualizer(props) {
     if (movingStart) {
       setNode(grid, row, col, 'START');
       dispatch({ type: 'SET_START_NODE', payload: { row, col } });
-    } else if (movingEnd) {
+    }
+
+    if (movingEnd) {
       setNode(grid, row, col, 'END');
       dispatch({ type: 'SET_END_NODE', payload: { row, col } });
     }
+
+    if (mouseIsPressed) {
+      // ensures render of grid
+      const newGrid = updatedGridWithWalls(grid, nodesToUpdate);
+      // clear queue
+      nodesToUpdate.length = 0;
+      setGrid(newGrid);
+    }
+
     setMouseIsPressed(false);
     setMovingStart(false);
     setMovingEnd(false);

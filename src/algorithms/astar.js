@@ -3,13 +3,6 @@ const sortNodesByDistance = function(unvisitedNodes) {
   unvisitedNodes.sort((nodeA, nodeB) => nodeA.totalDistance - nodeB.totalDistance || nodeA.heuristicDistance - nodeB.heuristicDistance);
 };
 
-const updateUnvisitedNeighbors = function(node, grid, startNode, finishNode) {
-  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
-  for (const neighbor of unvisitedNeighbors) {
-    updateNode(node, neighbor, startNode, finishNode);
-  }
-};
-
 const updateNode = function(node, neighbor, startNode, finishNode) {
   const distance = distanceFromNeighbor(node, neighbor);
   // set heuristic distance if there isnt one
@@ -20,6 +13,13 @@ const updateNode = function(node, neighbor, startNode, finishNode) {
     neighbor.distance = distanceToCompare;
     neighbor.totalDistance = neighbor.distance + neighbor.heuristicDistance;
     neighbor.previousNode = node;
+  }
+};
+
+const updateUnvisitedNeighbors = function(node, grid, startNode, finishNode) {
+  const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
+  for (const neighbor of unvisitedNeighbors) {
+    updateNode(node, neighbor, startNode, finishNode);
   }
 };
 
