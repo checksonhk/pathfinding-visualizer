@@ -55,7 +55,7 @@ export default function NavBar(props) {
   return (
     <Navbar bg='dark' variant='dark'>
       <Navbar.Brand>
-        <img src='/logo.png' width='35' height='35' alt='Pathfinding Visualizer Logo'></img>
+        <img src='/logo.svg' width='35' height='35' alt='Pathfinding Visualizer Logo'></img>
         <span className='navbar-brand-text'>PathFinding Visualizer</span>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='navbar-nav' />
