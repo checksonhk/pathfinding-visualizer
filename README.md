@@ -25,6 +25,17 @@ Maze Algorithms:
 
 ## TODO / Bug Fixes
 
+- implement weights
+- styling breaks on high resolution screens
+- swarm pathfinding algorithm
+- disable buttons when alogrithms are running
+- auto clear grids when maze algorithms are selected
+- recursive backtracking algorithm
+- Randomized Kruskal's algorithm
+- Randomized Prim's algorithm
+- ability to stop animations
+- implement cards to provide psuedocode for algorithms
+
 ## Getting Started
 
 To clone and run this application, you'll need Git and Node.js (which comes with npm) installed on your computer. From your command line:
