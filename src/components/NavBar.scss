@@ -1,12 +1,15 @@
 @import '../custom.scss';
 
 .navbar {
+  &-brand-text {
+    margin-left: 10px;
+  }
   .dropdown-menu {
-    background-color: $dark;
+    background-color: $layer;
   }
 
   .dropdown.show a {
-    background-color: $dark;
+    background-color: $layer;
     color: white;
   }
 
@@ -17,5 +20,5 @@
 }
 
 #speed-nav-dropdown {
-  color: white;
+  color: $light;
 }

@@ -5,7 +5,7 @@
   width: 25px;
   height: 25px;
   font-size: 0.6rem;
-  outline: 1px solid #d3d3d3;
+  outline: 1px solid $light;
 }
 
 .node-finish {
@@ -111,7 +111,8 @@
 @keyframes shortestPath {
   0% {
     transform: scale(0.6);
-    background-color: #ffa41b;
+    background-color: #ff652f;
+    // background-color: #ffa41b;
   }
 
   50% {

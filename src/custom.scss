@@ -1,9 +1,16 @@
 /* -------begin customization-------- */ /* simply assign the value */
 // $dark: #38302e;
-$primary: #6f6866;
-$secondary: #788585;
-$tertiary: #9caea9;
-$light: #ccdad1;
+// $primary: #6f6866;
+// $secondary: #788585;
+// $tertiary: #9caea9;
+// $light: #ccdad1;
+
+$base: #0b0c10;
+$layer: #1f2833;
+$light: #c5c6c7;
+$primary: #45a29e;
+$secondary: #66fcf1;
+$white: #eee;
 
 /*
 $theme-colors: (
@@ -20,9 +27,10 @@ $theme-colors: (
 
 $theme-colors: (
   primary: $primary,
-  secondary: $secondary,
-  tertiary: $tertiary,
-  // dark: $dark,,,
+  // secondary: $secondary,
+    // tertiary: $tertiary,
+    dark: $layer,
+  light: $light,
 );
 /* -------end customization-------- */
 
