@@ -79,13 +79,13 @@ const dragEnterNode = function(grid, row, col, type, array = null) {
       break;
     case 'WALL':
       /* Hacky Solution for now */
-      if (node.isStart || node.isFinish) return;
       // const newNode = {
       //   ...node,
       //   isWall: !node.isWall,
       // };
       // grid[row][col] = newNode;
 
+      if (node.isStart || node.isFinish) return;
       /* changed to batch update wall Nodes */
       const newNode = { ...node, isWall: !node.isWall };
       array.push(newNode);
@@ -146,8 +146,6 @@ export default function PathfindingVisualizer(props) {
   console.log('RENDERING GRID');
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
-  const [movingStart, setMovingStart] = useState(false);
-  const [movingEnd, setMovingEnd] = useState(false);
   const { state, dispatch } = useContext(pathfindingContext);
 
   const START_NODE = state.startNode;
@@ -162,74 +160,78 @@ export default function PathfindingVisualizer(props) {
     <div id='pathfinding-visualizer'>
       <NavBar visualizeClick={visualizePath} mazeClick={visualizeMaze} resetClick={resetGrid} clearClick={clearPath} />
       <Legend />
-      <div className='grid'>
-        {grid.map((row, rowIdx) => {
-          return (
-            <div key={rowIdx} className='grid-row'>
-              {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart, isWall, distance, totalDistance } = node;
-                return (
-                  <Node
-                    key={nodeIdx}
-                    col={col}
-                    isFinish={isFinish}
-                    isStart={isStart}
-                    isWall={isWall}
-                    mouseIsPressed={mouseIsPressed}
-                    onMouseDown={(row, col) => handleMouseDown(row, col)}
-                    onMouseEnter={(row, col) => handleMouseEnter(row, col)}
-                    onMouseLeave={(row, col) => handleMouseLeave(row, col)}
-                    onMouseUp={(row, col) => handleMouseUp(row, col)}
-                    row={row}
-                    showNumbers={state.showNumbers}
-                    distance={distance}
-                    totalDistance={totalDistance}></Node>
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+      <div className='grid'>{renderGrid(grid)}</div>
     </div>
   );
 
+  function renderGrid(grid) {
+    return grid.map((row, rowIdx) => {
+      return (
+        <div key={rowIdx} className='grid-row'>
+          {row.map((node, nodeIdx) => {
+            const { row, col, isFinish, isStart, isWall, distance, totalDistance } = node;
+            return (
+              <Node
+                key={nodeIdx}
+                col={col}
+                isFinish={isFinish}
+                isStart={isStart}
+                isWall={isWall}
+                onMouseDown={(row, col) => handleMouseDown(row, col)}
+                onMouseEnter={(row, col) => handleMouseEnter(row, col)}
+                onMouseLeave={(row, col) => handleMouseLeave(row, col)}
+                onMouseUp={(row, col) => handleMouseUp(row, col)}
+                row={row}
+                showNumbers={state.showNumbers}
+                distance={distance}
+                totalDistance={totalDistance}></Node>
+            );
+          })}
+        </div>
+      );
+    });
+  }
+
   function handleMouseDown(row, col) {
     if (grid[row][col].isStart) {
-      setMovingStart(true);
+      // setMovingStart(true);
+      setMouseIsPressed('START');
       dragEnterNode(grid, row, col, 'START');
     } else if (grid[row][col].isFinish) {
-      setMovingEnd(true);
+      // setMovingEnd(true);
+      setMouseIsPressed('END');
       dragEnterNode(grid, row, col, 'END');
     } else {
-      setMouseIsPressed(true);
+      // setMouseIsPressed(true);
+      setMouseIsPressed('WALL');
       dragEnterNode(grid, row, col, 'WALL', nodesToUpdate);
     }
   }
 
   function handleMouseEnter(row, col) {
-    if (movingStart) dragEnterNode(grid, row, col, 'START');
-    if (movingEnd) dragEnterNode(grid, row, col, 'END');
-    if (mouseIsPressed) dragEnterNode(grid, row, col, 'WALL', nodesToUpdate);
+    if (mouseIsPressed === 'START') dragEnterNode(grid, row, col, 'START');
+    if (mouseIsPressed === 'END') dragEnterNode(grid, row, col, 'END');
+    if (mouseIsPressed === 'WALL') dragEnterNode(grid, row, col, 'WALL', nodesToUpdate);
   }
 
   function handleMouseLeave(row, col) {
-    if (movingStart || movingEnd) {
+    if (mouseIsPressed === 'START' || mouseIsPressed === 'END') {
       dragLeaveNode(grid, row, col);
     }
   }
 
   function handleMouseUp(row, col) {
-    if (movingStart) {
+    if (mouseIsPressed === 'START') {
       setNode(grid, row, col, 'START');
       dispatch({ type: 'SET_START_NODE', payload: { row, col } });
     }
 
-    if (movingEnd) {
+    if (mouseIsPressed === 'END') {
       setNode(grid, row, col, 'END');
       dispatch({ type: 'SET_END_NODE', payload: { row, col } });
     }
 
-    if (mouseIsPressed) {
+    if (mouseIsPressed === 'WALL') {
       // ensures render of grid
       const newGrid = updatedGridWithWalls(grid, nodesToUpdate);
       // clear queue
@@ -238,8 +240,8 @@ export default function PathfindingVisualizer(props) {
     }
 
     setMouseIsPressed(false);
-    setMovingStart(false);
-    setMovingEnd(false);
+    // setMovingStart(false);
+    // setMovingEnd(false);
   }
 
   function animatePath(visitedNodesInOrder, nodesInShortestPathOrder) {
